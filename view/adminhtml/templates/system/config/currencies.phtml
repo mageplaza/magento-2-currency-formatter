@@ -1,0 +1,294 @@
+<?php
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_CurrencyFormatter
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
+?>
+
+<?php
+/** @var Mageplaza\CurrencyFormatter\Block\Adminhtml\System\Currencies $block */
+$currencies = $block->getStoreCurrencies();
+$format = $block->getFormatOptions();
+$config = $block->getElement()->getValue();
+?>
+
+<style>
+    #mpcurrencyformatter_general colgroup.label,#mpcurrencyformatter_general td.label {
+        width : 20% !important;
+    }
+    
+    #mpcurrencyformatter_general td.value {
+        padding : 2.2rem 1.5rem 0 0 !important;
+    }
+    
+    #mp-grid-currencies-config table th {
+        text-align: center;
+        background-color: #cccccc !important;
+    }
+
+    .mp-currency-data td {
+        background-color: #f2f2f2 !important;
+    }
+    
+    .mp-currency-header td {
+        background-color: #e6e6e6 !important;
+    }
+    
+    .mp-currency-name {
+        font-weight: bold;
+    }
+    
+    .mpcurrencyformatter-currency {
+        width: 15%;
+    }
+    .mpcurrencyformatter-symbol {
+        width: 23%;
+    }
+    .mpcurrencyformatter-group {
+        width: 15%;
+    }
+    .mpcurrencyformatter-decimal {
+        width: 15%;
+    }
+    .mpcurrencyformatter-minus {
+        width: 17%;
+    }
+    .mpcurrencyformatter-preview {
+        width: 15%;
+    }
+</style>
+
+<div class="design_theme_ua_regexp" id="mp-grid-currencies-config">
+    <div class="admin__control-table-wrapper">
+        <table class="admin__control-table">
+            <colgroup class="mpcurrencyformatter-currency"></colgroup>
+            <colgroup class="mpcurrencyformatter-symbol"></colgroup>
+            <colgroup class="mpcurrencyformatter-group"></colgroup>
+            <colgroup class="mpcurrencyformatter-decimal"></colgroup>
+            <colgroup class="mpcurrencyformatter-minus"></colgroup>
+            <colgroup class="mpcurrencyformatter-preview"></colgroup>
+            
+            <thead>
+                <tr>
+                    <th class="col-currencies">Currencies</th>
+                    <th class="col-template" colspan="4">Template</th>
+                    <th class="col-preview">Preview</th>
+                </tr>
+            </thead>
+            
+            <tbody data-role="options-container">
+            <?php foreach ($currencies as $currency) : ?>
+                <tr class="mp-currency-header">
+                    <td class="mp-currency-name"><?= /* @noEscape */ $currency['name'] ?></td>
+                    <td>
+                        <label for="mpcurrencyformatter_show_symbol_<?= /* @noEscape */ $currency['code'] ?>">
+                            <span><?= /* @noEscape */ __('Show Symbol') ?></span>
+                        </label>
+                    </td>
+                    <td>
+                        <label for="mpcurrencyformatter_group_separator_<?= /* @noEscape */ $currency['code'] ?>">
+                            <span><?= /* @noEscape */ __('Group Separator') ?></span>
+                        </label>
+                    </td>
+                    <td>
+                        <label for="mpcurrencyformatter_decimal_number_<?= /* @noEscape */ $currency['code'] ?>">
+                            <span><?= /* @noEscape */ __('Decimal Number') ?></span>
+                        </label>
+                    </td>
+                    <td>
+                        <label for="mpcurrencyformatter_minus_sign_<?= /* @noEscape */ $currency['code'] ?>">
+                            <span><?= /* @noEscape */ __('Minus Sign') ?></span>
+                        </label>
+                    </td>
+                    <td></td>
+                </tr>
+            
+                <tr class="mp-currency-data">
+                    <td>
+                        <input id="mpcurrencyformatter_use_default_<?= /* @noEscape */ $currency['code'] ?>"
+                               name="<?= /* @noEscape */ $block->getSelectName('use_default', $currency['code']) ?>"
+                               type="checkbox"
+                               value="<?= /* @noEscape */ $config[$currency['code']]['use_default'] ?>"
+                               class="checkbox mpcf-use-default"
+                               data-currency="<?= /* @noEscape */ $currency['code'] ?>"
+                               onchange="this.value = this.checked ? 1: 0"
+                               <?= ((int) $config[$currency['code']]['use_default'] === 1 ? 'checked' : '') ?>>
+                        <label for="mpcurrencyformatter_use_default_<?= /* @noEscape */ $currency['code'] ?>"
+                               class="inherit">
+                            <?= /* @noEscape */ __('Use Default') ?>
+                        </label>
+                    </td>
+                    <td>
+                        <select id="mpcurrencyformatter_show_symbol_<?= /* @noEscape */ $currency['code'] ?>"
+                                name="<?= /* @noEscape */ $block->getSelectName('show_symbol', $currency['code']) ?>"
+                                class="select admin__control-select">
+                            <?php foreach ($format['show_symbol'] as $showSymbol) : ?>
+                                <option value="<?= /* @noEscape */ $showSymbol['value'] ?>"
+                                    <?= ($config[$currency['code']]['show_symbol'] ===  $showSymbol['value']
+                                        ? 'selected="selected"'
+                                        : '') ?>>
+                                    <?= /* @noEscape */ $showSymbol['label'] ?>
+                                </option>
+                            <?php endforeach;?>
+                        </select>
+                    </td>
+                    <td>
+                        <select id="mpcurrencyformatter_group_separator_<?= /* @noEscape */ $currency['code'] ?>"
+                                name="<?= /* @noEscape */ $block->getSelectName('group_separator', $currency['code'])?>"
+                                class="select admin__control-select">
+                            <?php foreach ($format['group_separator'] as $groupSeparator) : ?>
+                                <option value="<?= /* @noEscape */ $groupSeparator['value'] ?>"
+                                    <?= ($config[$currency['code']]['group_separator'] ===  $groupSeparator['value']
+                                        ? 'selected'
+                                        : '') ?>>
+                                    <?= /* @noEscape */ $groupSeparator['label'] ?>
+                                </option>
+                            <?php endforeach;?>
+                        </select>
+                    </td>
+                    <td>
+                        <select id="mpcurrencyformatter_decimal_number_<?= /* @noEscape */ $currency['code'] ?>"
+                                name="<?= /* @noEscape */ $block->getSelectName('decimal_number', $currency['code'])?>"
+                                class="select admin__control-select">
+                            <?php foreach ($format['decimal_number'] as $decimalNumber) : ?>
+                                <option value="<?= /* @noEscape */ $decimalNumber['value'] ?>"
+                                    <?= ((int) $config[$currency['code']]['decimal_number'] ===  $decimalNumber['value']
+                                    ? 'selected'
+                                    : '') ?>>
+                                    <?= /* @noEscape */ $decimalNumber['label'] ?>
+                                </option>
+                            <?php endforeach;?>
+                        </select>
+                    </td>
+                    <td>
+                        <input id="mpcurrencyformatter_minus_sign_<?= /* @noEscape */ $currency['code'] ?>"
+                               name="<?= /* @noEscape */ $block->getSelectName('minus_sign', $currency['code']) ?>"
+                               type="text"
+                               value="<?= /* @noEscape */ $config[$currency['code']]['minus_sign'] ?>">
+                    </td>
+                    <td></td>
+                </tr>
+            
+                <tr class="mp-currency-data">
+                    <td></td>
+                    <td>
+                        <label for="mpcurrencyformatter_symbol_<?= /* @noEscape */ $currency['code'] ?>">
+                            <span><?= /* @noEscape */ __('Symbol') ?></span>
+                        </label>
+                    </td>
+                    <td></td>
+                    <td>
+                        <label for="mpcurrencyformatter_decimal_separator_<?= /* @noEscape */ $currency['code'] ?>">
+                            <span><?= /* @noEscape */ __('Decimal Separator') ?></span>
+                        </label>
+                    </td>
+                    <td>
+                        <label for="mpcurrencyformatter_show_minus_sign_<?= /* @noEscape */ $currency['code'] ?>">
+                            <span><?= /* @noEscape */ __('Show Minus Sign') ?></span>
+                        </label>
+                    </td>
+                    <td></td>
+                </tr>
+            
+                <tr class="mp-currency-data">
+                    <td></td>
+                    <td>
+                        <input type="text"
+                               name="<?= /* @noEscape */ $block->getSelectName('symbol', $currency['code']) ?>"
+                               id="mpcurrencyformatter_symbol_<?= /* @noEscape */ $currency['code'] ?>"
+                               value="<?= /* @noEscape */ $config[$currency['code']]['symbol']?>">
+                    </td>
+                    <td></td>
+                    <td>
+                        <select name="<?=/* @noEscape */$block->getSelectName('decimal_separator', $currency['code'])?>"
+                                id="mpcurrencyformatter_decimal_separator_<?= /* @noEscape */ $currency['code'] ?>">
+                            <?php foreach ($format['decimal_separator'] as $decimalSeparator) : ?>
+                                <option value="<?= /* @noEscape */ $decimalSeparator['value'] ?>"
+                                    <?= ($config[$currency['code']]['decimal_separator'] ===  $decimalSeparator['value']
+                                        ? 'selected'
+                                        : '') ?>>
+                                    <?= /* @noEscape */ $decimalSeparator['label'] ?>
+                                </option>
+                            <?php endforeach;?>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="<?= /* @noEscape */ $block->getSelectName('show_minus', $currency['code']) ?>"
+                                id="mpcurrencyformatter_show_minus_sign_<?= /* @noEscape */ $currency['code'] ?>">
+                            <?php foreach ($format['show_minus'] as $showMinus) : ?>
+                                <option value="<?= /* @noEscape */ $showMinus['value'] ?>"
+                                    <?= ($config[$currency['code']]['show_minus'] ===  $showMinus['value']
+                                        ? 'selected'
+                                        : '') ?>>
+                                    <?= /* @noEscape */ $showMinus['label'] ?>
+                                </option>
+                            <?php endforeach;?>
+                        </select>
+                    </td>
+                    <td></td>
+                </tr>
+            <?php endforeach;?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    require([
+        'jquery',
+    ], function ($) {
+        
+        var mpCurrencyFormatter = {
+            currencyConfig : $('#row_mpcurrencyformatter_general_currencies td.value'),
+            
+            disableFields : [
+                '#mpcurrencyformatter_show_symbol_',
+                '#mpcurrencyformatter_group_separator_',
+                '#mpcurrencyformatter_decimal_number_',
+                '#mpcurrencyformatter_minus_sign_',
+                '#mpcurrencyformatter_symbol_',
+                '#mpcurrencyformatter_decimal_separator_',
+                '#mpcurrencyformatter_show_minus_sign_',
+            ],
+        };
+    
+        mpCurrencyFormatter.toggleDisable = function(currencyCode, value) {
+            $.each(mpCurrencyFormatter.disableFields, function(key, field) {
+                if(value) {
+                    $(field + currencyCode).attr('disabled', 'disabled');
+                }else {
+                    $(field + currencyCode).removeAttr('disabled');
+                }
+            });
+        };
+        
+        mpCurrencyFormatter.init = function () {
+            mpCurrencyFormatter.currencyConfig.attr('colspan', '2');
+            
+            $('.mpcf-use-default').each(function() {
+                var currencyCode = $(this).data('currency');
+                mpCurrencyFormatter.toggleDisable(currencyCode, parseInt(this.value));
+                $(this).on('change', function() {
+                    mpCurrencyFormatter.toggleDisable(currencyCode, parseInt(this.value));
+                });
+            });
+            
+        }();
+    });
+</script>
+
