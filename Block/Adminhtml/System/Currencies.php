@@ -113,4 +113,31 @@ class Currencies extends AbstractFieldArray
     {
         return self::BASE_SELECT_NAME . "[{$currencyCode}]" . "[{$fieldName}]";
     }
+    
+    /**
+     * @return array
+     */
+    public function getUseDefaultConfig()
+    {
+        $storeId = (int) $this->getRequest()->getParam('store', 0);
+        if ($storeId !== 0) {
+            return [
+                'text' => __('Use Website'),
+                'remove' => 1,
+            ];
+        }
+        
+        $websiteId = (int) $this->getRequest()->getParam('website', 0);
+        if ($websiteId !== 0) {
+            return [
+                'text' => __('Use Default'),
+                'remove' => 1,
+            ];
+        }
+        
+        return [
+            'text' => __('Use System'),
+            'remove' => 0,
+        ];
+    }
 }

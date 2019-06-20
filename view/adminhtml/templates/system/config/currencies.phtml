@@ -25,6 +25,7 @@
 $currencies = $block->getStoreCurrencies();
 $format = $block->getFormatOptions();
 $config = $block->getElement()->getValue();
+$useDefault = $block->getUseDefaultConfig();
 ?>
 
 <style>
@@ -130,7 +131,7 @@ $config = $block->getElement()->getValue();
                                <?= ((int) $config[$currency['code']]['use_default'] === 1 ? 'checked' : '') ?>>
                         <label for="mpcurrencyformatter_use_default_<?= /* @noEscape */ $currency['code'] ?>"
                                class="inherit">
-                            <?= /* @noEscape */ __('Use Default') ?>
+                               <?= /* @noEscape */ $useDefault['text'] ?>
                         </label>
                     </td>
                     <td>
@@ -167,7 +168,7 @@ $config = $block->getElement()->getValue();
                                 class="select admin__control-select">
                             <?php foreach ($format['decimal_number'] as $decimalNumber) : ?>
                                 <option value="<?= /* @noEscape */ $decimalNumber['value'] ?>"
-                                    <?= ((int) $config[$currency['code']]['decimal_number'] ===  $decimalNumber['value']
+                                    <?= ((int) $config[$currency['code']]['decimal_number'] === $decimalNumber['value']
                                     ? 'selected'
                                     : '') ?>>
                                     <?= /* @noEscape */ $decimalNumber['label'] ?>
@@ -255,7 +256,8 @@ $config = $block->getElement()->getValue();
         
         var mpCurrencyFormatter = {
             currencyConfig : $('#row_mpcurrencyformatter_general_currencies td.value'),
-            
+            removeUseDefault : <?= /* @noEscape */ $useDefault['remove'] ?>,
+            useDefaultClass : $('#row_mpcurrencyformatter_general_currencies td.use-default'),
             disableFields : [
                 '#mpcurrencyformatter_show_symbol_',
                 '#mpcurrencyformatter_group_separator_',
@@ -287,6 +289,10 @@ $config = $block->getElement()->getValue();
                     mpCurrencyFormatter.toggleDisable(currencyCode, parseInt(this.value));
                 });
             });
+            
+            if (mpCurrencyFormatter.removeUseDefault) {
+                mpCurrencyFormatter.useDefaultClass.remove();
+            }
             
         }();
     });
