@@ -33,7 +33,7 @@ use Mageplaza\CurrencyFormatter\Model\System\Config\Source\GroupSeparator;
 use Mageplaza\CurrencyFormatter\Model\System\Config\Source\ShowSymbol;
 use Mageplaza\CurrencyFormatter\Model\System\Config\Source\ShowMinus;
 use Magento\Framework\Locale\CurrencyInterface;
-use Magento\Framework\Locale\Format as LocaleFormat;
+use Mageplaza\CurrencyFormatter\Model\Locale\DefaultFormat;
 use Magento\Directory\Model\CurrencyFactory;
 use NumberFormatter;
 
@@ -45,7 +45,6 @@ class Data extends AbstractData
 {
     const CONFIG_MODULE_PATH = 'mpcurrencyformatter';
     const MINUS_SIGN = '-';
-    const CONTENT = '%s';
     
     /**
      * @var DecimalNumber
@@ -78,9 +77,9 @@ class Data extends AbstractData
     protected $_localeCurrency;
     
     /**
-     * @var LocaleFormat
+     * @var DefaultFormat
      */
-    protected $_localeFormat;
+    protected $_defaultFormat;
     
     /**
      * @var LocaleResolver
@@ -103,7 +102,7 @@ class Data extends AbstractData
      * @param ShowSymbol $showSymbol
      * @param ShowMinus $showMinus
      * @param CurrencyInterface $localeCurrency
-     * @param LocaleFormat $localeFormat
+     * @param DefaultFormat $defaultFormat
      * @param LocaleResolver $localeResolver
      * @param CurrencyFactory $currencyFactory
      */
@@ -117,7 +116,7 @@ class Data extends AbstractData
         ShowSymbol $showSymbol,
         ShowMinus $showMinus,
         CurrencyInterface $localeCurrency,
-        LocaleFormat $localeFormat,
+        DefaultFormat $defaultFormat,
         LocaleResolver $localeResolver,
         CurrencyFactory $currencyFactory
     ) {
@@ -127,7 +126,7 @@ class Data extends AbstractData
         $this->_showSymbol = $showSymbol;
         $this->_showMinus = $showMinus;
         $this->_localeCurrency = $localeCurrency;
-        $this->_localeFormat = $localeFormat;
+        $this->_defaultFormat = $defaultFormat;
         $this->_localeResolver = $localeResolver;
         $this->_currencyFactory = $currencyFactory;
     
@@ -166,7 +165,7 @@ class Data extends AbstractData
     {
         return $this->storeManager->getStore($storeId)->getAvailableCurrencyCodes();
     }
-    
+
     /**
      * @param string $currencyCode
      * @return array
@@ -174,7 +173,7 @@ class Data extends AbstractData
     public function getCurrencyDefaultConfig($currencyCode)
     {
         $currentLocale = $this->_localeResolver->getLocale();
-        $defaultConfig = $this->_localeFormat->getPriceFormat($currentLocale, $currencyCode);
+        $defaultConfig = $this->_defaultFormat->getFormat($currentLocale, $currencyCode);
         
         return [
             'use_default' => 1,
@@ -214,25 +213,7 @@ class Data extends AbstractData
         $currency = $this->_currencyFactory->create()->load($code);
         $default = $currency->getOutputFormat();
     
-        return $this->processShowSymbol($symbol, self::CONTENT, $showSymbol, $default);
-    }
-    
-    /**
-     * @param string $localeCode
-     * @param string $currencyCode
-     * @return array
-     */
-    public function getOriginalFormat($localeCode, $currencyCode)
-    {
-        $formatter = new NumberFormatter(
-            $localeCode . '@currency=' . $currencyCode,
-            NumberFormatter::CURRENCY
-        );
-        
-        return [
-            'decimalSymbol' => $formatter->getSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL),
-            'groupSymbol' => $formatter->getSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL),
-        ];
+        return $this->processShowSymbol($symbol, DefaultFormat::CONTENT, $showSymbol, $default);
     }
     
     /**

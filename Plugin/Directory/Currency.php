@@ -29,6 +29,7 @@ use Mageplaza\CurrencyFormatter\Plugin\AbstractFormat;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Locale\CurrencyInterface;
 use Magento\Framework\Locale\FormatInterface;
+use Mageplaza\CurrencyFormatter\Model\Locale\DefaultFormat;
 use Zend_Currency;
 
 /**
@@ -46,6 +47,11 @@ class Currency extends AbstractFormat
      * @var FormatInterface
      */
     protected $_localeFormat;
+
+    /**
+     * @var DefaultFormat
+     */
+    protected $_defaultFormat;
     
     /**
      * Currency constructor.
@@ -54,16 +60,19 @@ class Currency extends AbstractFormat
      * @param ResolverInterface $localeResolver
      * @param CurrencyInterface $localeCurrency
      * @param FormatInterface $localeFormat
+     * @param DefaultFormat $defaultFormat
      */
     public function __construct(
         StoreManagerInterface $storeManager,
         HelperData $helperData,
         ResolverInterface $localeResolver,
         CurrencyInterface $localeCurrency,
-        FormatInterface $localeFormat
+        FormatInterface $localeFormat,
+        DefaultFormat $defaultFormat
     ) {
         $this->_localeCurrency = $localeCurrency;
         $this->_localeFormat = $localeFormat;
+        $this->_defaultFormat = $defaultFormat;
         parent::__construct($storeManager, $helperData, $localeResolver);
     }
     
@@ -84,10 +93,10 @@ class Currency extends AbstractFormat
         
         $currency= $this->getCurrencyCode();
         $locale = $this->getLocaleCode();
-        $original = $this->_helperData->getOriginalFormat($locale, $currency);
+        $original = $this->_defaultFormat->getFormat($locale, $currency);
         $config = $this->getFormatByCurrency($currency);
         $decimal = (int) $config['decimal_number'];
-        
+
         if (!is_numeric($price)) {
             $price = $this->_localeFormat->getNumber($price);
         }

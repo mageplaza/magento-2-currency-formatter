@@ -21,32 +21,29 @@
 
 namespace Mageplaza\CurrencyFormatter\Model\Locale;
 
-use Magento\Framework\Locale\Format;
-use NumberFormatter;
-
 /**
  * Class DefaultFormat
  * @package Mageplaza\CurrencyFormatter\Model\Locale
  */
-class DefaultFormat extends Format
+class DefaultFormat
 {
+    const CONTENT = '%s';
+
     /**
-     * @param string $localeCode
-     * @param string $currencyCode
+     * @param $localeCode
+     * @param $currencyCode
      * @return array
      */
     public function getFormat($localeCode, $currencyCode)
     {
-        $currency = $this->currencyFactory->create()->load($currencyCode);
-    
         $formatter = new \NumberFormatter(
-            $localeCode . '@currency=' . $currency->getCode(),
-            NumberFormatter::CURRENCY
+            $localeCode . '@currency=' . $currencyCode,
+            \NumberFormatter::CURRENCY
         );
         
         $format = $formatter->getPattern();
-        $decimalSymbol = $formatter->getSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
-        $groupSymbol = $formatter->getSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL);
+        $decimalSymbol = $formatter->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
+        $groupSymbol = $formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL);
     
         $pos = strpos($format, ';');
         if ($pos !== false) {
@@ -67,20 +64,10 @@ class DefaultFormat extends Format
             $requiredPrecision = strlen($t) - $pos - $totalPrecision;
         }
     
-        if (strrpos($format, ',') !== false) {
-            $group = $decimalPoint - strrpos($format, ',') - 1;
-        } else {
-            $group = strrpos($format, '.');
-        }
-    
         $result = [
-            'pattern' => $currency->getOutputFormat(),
-            'precision' => $totalPrecision,
             'requiredPrecision' => $requiredPrecision,
             'decimalSymbol' => $decimalSymbol,
             'groupSymbol' => $groupSymbol,
-            'groupLength' => $group,
-            'integerRequired' => $totalPrecision === 0,
         ];
     
         return $result;
