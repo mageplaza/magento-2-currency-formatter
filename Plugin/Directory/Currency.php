@@ -100,7 +100,7 @@ class Currency extends AbstractFormat
         if (!is_numeric($price)) {
             $price = $this->_localeFormat->getNumber($price);
         }
-        
+
         $price = sprintf('%F', $price);
         $options['precision'] = $decimal;
         $options['display'] = Zend_Currency::NO_SYMBOL;

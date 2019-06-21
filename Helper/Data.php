@@ -226,7 +226,8 @@ class Data extends AbstractData
     public function getDirectoryCurrency($result, $decimal, $original, $config)
     {
         if ($decimal === 0) {
-            return $this->processShowSymbol($config['symbol'], $result, $config['show_symbol']);
+            $processedCurrency = $this->processShowSymbol($config['symbol'], $result, $config['show_symbol']);
+            return str_replace($original['groupSymbol'], $config['group_separator'], $processedCurrency);
         }
     
         $decimalPart = substr($result, -($decimal + 1), $decimal + 1);
@@ -234,7 +235,7 @@ class Data extends AbstractData
         $currencyPartResult = str_replace($original['groupSymbol'], $config['group_separator'], $currencyPart);
         $decimalPartResult = str_replace($original['decimalSymbol'], $config['decimal_separator'], $decimalPart);
         $result = $currencyPartResult . $decimalPartResult;
-    
+        
         return $this->processShowSymbol($config['symbol'], $result, $config['show_symbol']);
     }
     
