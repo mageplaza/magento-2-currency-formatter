@@ -90,7 +90,7 @@ class Currency extends AbstractFormat
         if (!$this->_helperData->isEnabled()) {
             return $proceed($price, $options = []);
         }
-        
+
         $currency= $this->getCurrencyCode();
         $locale = $this->getLocaleCode();
         $original = $this->_defaultFormat->getFormat($locale, $currency);
@@ -104,10 +104,8 @@ class Currency extends AbstractFormat
         $price = sprintf('%F', $price);
         $options['precision'] = $decimal;
         $options['display'] = Zend_Currency::NO_SYMBOL;
-        
         $firstResult = $this->_localeCurrency->getCurrency($currency)->toCurrency($price, $options);
         $finalResult = $this->_helperData->getDirectoryCurrency($firstResult, $decimal, $original, $config);
-        
         return $finalResult;
     }
 }

@@ -51,7 +51,10 @@ class Format extends AbstractFormat
         $result['requiredPrecision'] = $config['decimal_number'];
         $result['decimalSymbol'] = $config['decimal_separator'];
         $result['groupSymbol'] = $config['group_separator'];
-        
+        $result['showMinus'] = $config['show_minus'];
+        $result['symbol'] = $config['symbol'];
+        $result['minusSign'] = $config['minus_sign'];
+
         return $result;
     }
 }

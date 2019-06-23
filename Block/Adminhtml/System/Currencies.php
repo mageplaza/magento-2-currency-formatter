@@ -26,7 +26,6 @@ use Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray;
 use Mageplaza\CurrencyFormatter\Helper\Data as HelperData;
 use Magento\Framework\Locale\CurrencyInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Test\Helper;
 
 /**
  * Class Currencies
@@ -87,16 +86,10 @@ class Currencies extends AbstractFieldArray
     {
         $mpCurrencies = [];
         $storeId = $this->getRequest()->getParam('store', 0);
-        $formatOptions = $this->_helperData->getFormatOptions();
         $availableCurrencies = $this->_helperData->getCurrenciesByStore($storeId);
         foreach ($availableCurrencies as $code) {
             $mpCurrencies[$code]['code'] = $code;
             $mpCurrencies[$code]['name'] = $this->_localeCurrency->getCurrency($code)->getName();
-            $mpCurrencies[$code]['decimal_number'] = $formatOptions['decimal_number'];
-            $mpCurrencies[$code]['decimal_separator'] = $formatOptions['decimal_separator'];
-            $mpCurrencies[$code]['group_separator'] = $formatOptions['group_separator'];
-            $mpCurrencies[$code]['show_symbol'] = $formatOptions['show_symbol'];
-            $mpCurrencies[$code]['show_minus'] = $formatOptions['show_minus'];
             $mpCurrencies[$code]['config'] = $this->getElement()->getValue()[$code];
             $mpCurrencies[$code]['default'] = $this->getUseDefaultText();
             $mpCurrencies[$code]['base'] = self::BASE_SELECT_NAME;
@@ -104,9 +97,17 @@ class Currencies extends AbstractFieldArray
     
         return HelperData::jsonEncode(array_values($mpCurrencies));
     }
-    
+
     /**
-     * @return array
+     * @return string
+     */
+    public function getFormatOptions()
+    {
+        return HelperData::jsonEncode($this->_helperData->getFormatOptions());
+    }
+
+    /**
+     * @return \Magento\Framework\Phrase
      */
     public function getUseDefaultText()
     {

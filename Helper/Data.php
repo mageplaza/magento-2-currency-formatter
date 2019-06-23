@@ -213,7 +213,7 @@ class Data extends AbstractData
         $currency = $this->_currencyFactory->create()->load($code);
         $default = $currency->getOutputFormat();
     
-        return $this->processShowSymbol($symbol, DefaultFormat::CONTENT, $showSymbol, $default);
+        return $this->processShowSymbol($symbol, DefaultFormat::CONTENT, $showSymbol, [], $default);
     }
     
     /**
@@ -225,29 +225,57 @@ class Data extends AbstractData
      */
     public function getDirectoryCurrency($result, $decimal, $original, $config)
     {
+        $negative = [];
+        if (strpos($result, self::MINUS_SIGN) !== false) {
+            $negative = [
+                'show_minus' => $config['show_minus'],
+                'minus_sign' => $config['minus_sign'],
+            ];
+        }
+
         if ($decimal === 0) {
-            $processedCurrency = $this->processShowSymbol($config['symbol'], $result, $config['show_symbol']);
+            $processedCurrency = $this->processShowSymbol($config['symbol'], $result, $config['show_symbol'], $negative);
             return str_replace($original['groupSymbol'], $config['group_separator'], $processedCurrency);
         }
-    
+
         $decimalPart = substr($result, -($decimal + 1), $decimal + 1);
         $currencyPart = substr($result, 0, strlen($result) - ($decimal + 1));
         $currencyPartResult = str_replace($original['groupSymbol'], $config['group_separator'], $currencyPart);
         $decimalPartResult = str_replace($original['decimalSymbol'], $config['decimal_separator'], $decimalPart);
         $result = $currencyPartResult . $decimalPartResult;
-        
-        return $this->processShowSymbol($config['symbol'], $result, $config['show_symbol']);
+
+        return $this->processShowSymbol($config['symbol'], $result, $config['show_symbol'], $negative);
     }
     
     /**
      * @param string $symbol
      * @param string $content
      * @param string $options
+     * @param array $negative
      * @param null $default
      * @return string
      */
-    public function processShowSymbol($symbol, $content, $options, $default = null)
+    public function processShowSymbol($symbol, $content, $options, $negative, $default = null)
     {
+        if (!empty($negative)) {
+            $content = str_replace(self::MINUS_SIGN, '', $content);
+
+            switch ($negative['show_minus']) {
+                case ShowMinus::BEFORE_SYMBOL:
+                    $symbol = $negative['minus_sign'] . $symbol;
+                    break;
+                case ShowMinus::AFTER_SYMBOL:
+                    $symbol .= $negative['minus_sign'];
+                    break;
+                case ShowMinus::BEFORE_VALUE:
+                    $content = $negative['minus_sign'] . $content;
+                    break;
+                case ShowMinus::AFTER_VALUE:
+                    $content .= $negative['minus_sign'];
+                    break;
+            }
+        }
+
         switch ($options) {
             case ShowSymbol::BEFORE:
                 return $symbol . $content;
@@ -264,7 +292,7 @@ class Data extends AbstractData
         if ($default !== null) {
             return $default;
         }
-        
+
         return $content;
     }
 }

@@ -24,11 +24,12 @@ define([
     'uiComponent',
 ], function($, ko, _, Component) {
     'use strict';
-    
+
     return Component.extend({
         defaults: {
             template: 'Mageplaza_CurrencyFormatter/currencies'
         },
+        previewDemo : ko.observable('preview Demo'),
         currencyConfig : $('#row_mpcurrencyformatter_general_currencies td.value'),
         useDefaultClass : $('#row_mpcurrencyformatter_general_currencies td.use-default'),
         disableFields : [
@@ -40,38 +41,73 @@ define([
             '#mpcurrencyformatter_decimal_separator_',
             '#mpcurrencyformatter_show_minus_sign_',
         ],
-        
+
         initialize: function () {
             var self = this;
-            
+
+            this._super();
+
             this.currencyConfig.attr('colspan', '2');
-            $('.mpcf-use-default').each(function() {
-                var currencyCode = $(this).data('currency');
-                
-                this.toggleDisable(currencyCode, parseInt(this.value, 10));
-                $(this).on('change', function() {
-                    self.toggleDisable(currencyCode, parseInt(this.value, 10));
-                });
-            });
-            
             if (this.useDefaultClass) {
                 this.useDefaultClass.remove();
             }
-            
+            this.createPreview();
+        },
+
+        useDefault: function () {
             console.log(this);
-            
-            this._super();
         },
-        
-        toggleDisable: function(currencyCode, value) {
-            $.each(this.disableFields, function(key, field) {
-                if(value) {
-                    $(field + currencyCode).attr('disabled', 'disabled');
-                }else {
-                    $(field + currencyCode).removeAttr('disabled');
-                }
-            });
+
+        createPreview: function (currency) {
+            var newConfig = currency.config,
+                firstResult = '49' + newConfig.group_separator + '456',
+                decimalPart = '0000',
+                decimal = '',
+                symbol = newConfig.symbol;
+
+            if (newConfig.decimal_number > 0) {
+                decimal = newConfig.decimal_separator + decimalPart.substr(0, newConfig.decimal_number);
+            }
+
+            if (newConfig.show_minus === 'before_symbol') {
+                symbol = newConfig.minus_sign + symbol;
+            }
+
+            if (newConfig.show_minus === 'after_symbol') {
+                symbol = symbol + newConfig.minus_sign;
+            }
+
+            var secondResult = firstResult + decimal,
+                thirdResult = null;
+
+            if (newConfig.show_minus === 'before_value') {
+                secondResult = newConfig.minus_sign + secondResult;
+            }
+
+            if (newConfig.show_minus === 'after_value') {
+                secondResult = secondResult + newConfig.minus_sign;
+            }
+
+            switch (newConfig.show_symbol) {
+                case 'before':
+                    thirdResult = symbol + secondResult;
+                    break;
+                case 'before_with_space':
+                    thirdResult = symbol + ' ' + secondResult;
+                    break;
+                case 'after':
+                    thirdResult = secondResult + symbol;
+                    break;
+                case 'after_with_space':
+                    thirdResult = secondResult + ' ' + symbol;
+                    break;
+                default:
+                    thirdResult = secondResult;
+                    break;
+            }
+
+            self.previewDemo(thirdResult);
         },
-        
+
     });
 });

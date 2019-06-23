@@ -36,7 +36,8 @@
                     "mpcurrencyformatter": {
                         "component": "Mageplaza_CurrencyFormatter/js/view/currencies",
                         "config" : {
-                            "mpCurrencies" : <?= /* @noEscape */ $block->getStoreCurrencies() ?>
+                            "mpCurrencies" : <?= /* @noEscape */ $block->getStoreCurrencies() ?>,
+                            "mpFormat" : <?= /* @noEscape */ $block->getFormatOptions() ?>
                         }
                     }
                 }
