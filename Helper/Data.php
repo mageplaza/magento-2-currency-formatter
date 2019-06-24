@@ -35,7 +35,6 @@ use Mageplaza\CurrencyFormatter\Model\System\Config\Source\ShowMinus;
 use Magento\Framework\Locale\CurrencyInterface;
 use Mageplaza\CurrencyFormatter\Model\Locale\DefaultFormat;
 use Magento\Directory\Model\CurrencyFactory;
-use NumberFormatter;
 
 /**
  * Class Data

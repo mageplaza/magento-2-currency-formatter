@@ -67,3 +67,6 @@
 .mpcurrencyformatter-preview {
     width: 15%;
 }
+.mp-currency-data .preview-section {
+    text-align: center;
+}

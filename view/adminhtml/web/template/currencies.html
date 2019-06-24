@@ -10,9 +10,9 @@
 
             <thead>
             <tr>
-                <th class="col-currencies">Currencies</th>
-                <th class="col-template" colspan="4">Template</th>
-                <th class="col-preview">Preview</th>
+                <th class="col-currencies"><span data-bind="i18n: 'Currencies'"></span></th>
+                <th class="col-template" colspan="4"><span data-bind="i18n: 'Template'"></span></th>
+                <th class="col-preview"><span data-bind="i18n: 'Preview'"></span></th>
             </tr>
             </thead>
 
@@ -21,25 +21,25 @@
                 <td><strong data-bind="text: currency.name"></strong></td>
                 <td>
                     <label data-bind="attr: {for: 'mpcurrencyformatter_show_symbol_' + currency.code}">
-                        <span>Show Symbol</span>
+                        <span data-bind="i18n: 'Symbol Position'"></span>
                     </label>
                 </td>
                 <td>
                     <label data-bind="attr: {for: 'mpcurrencyformatter_group_separator_' + currency.code}">
-                        <span>Group Separator</span>
+                        <span data-bind="i18n: 'Group Separator'"></span>
                     </label>
                 </td>
                 <td>
                     <label data-bind="attr: {for: 'mpcurrencyformatter_decimal_number_' + currency.code}">
-                        <span>Decimal Number</span>
+                        <span data-bind="i18n: 'Decimal Number'"></span>
                     </label>
                 </td>
                 <td>
                     <label data-bind="attr: {for: 'mpcurrencyformatter_minus_sign_' + currency.code}">
-                        <span>Minus Sign</span>
+                        <span data-bind="i18n: 'Minus Sign'"></span>
                     </label>
                 </td>
-                <td><span>Preview section</span></td>
+                <td></td>
             </tr>
             <tr class="mp-currency-data">
                 <td>
@@ -51,7 +51,8 @@
                             checked: currency.config.use_default === 1,
                             event: { change: function(data, event) {$parent.useDefault(data, $parent)}}"
                            type="checkbox"
-                           class="checkbox">
+                           class="checkbox"
+                           onchange="this.value = this.checked ? 1: 0">
                     <label data-bind="attr: {for: 'mpcurrencyformatter_use_default_' + currency.code}" class="inherit">
                         <span data-bind="text: currency.default"></span>
                     </label>
@@ -103,21 +104,21 @@
                 <td></td>
                 <td>
                     <label data-bind="attr: {for: 'mpcurrencyformatter_symbol_' + currency.code}">
-                        <span>Symbol</span>
+                        <span data-bind="i18n: 'Symbol'"></span>
                     </label>
                 </td>
                 <td></td>
                 <td>
                     <label data-bind="attr: {for: 'mpcurrencyformatter_decimal_separator_' + currency.code}">
-                        <span>Decimal Separator</span>
+                        <span data-bind="i18n: 'Decimal Separator'"></span>
                     </label>
                 </td>
                 <td>
                     <label data-bind="attr: {for: 'mpcurrencyformatter_show_minus_' + currency.code}">
-                        <span>Show Minus Sign</span>
+                        <span data-bind="i18n: 'Minus Sign Position'"></span>
                     </label>
                 </td>
-                <td>
+                <td class="preview-section">
                     <span data-bind="attr: {id: 'demo_' + currency.code}"></span>
                 </td>
             </tr>
