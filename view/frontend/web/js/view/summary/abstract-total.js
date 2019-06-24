@@ -23,9 +23,9 @@ define([
     'Magento_Catalog/js/price-utils',
 ], function($, quote, priceUtils){
     'use strict';
-
-    const content = '%s';
-    var newFormat = {
+    
+    var content = '%s',
+        newFormat = {
         decimalSymbol: '',
         groupLength: '',
         groupSymbol: '',
@@ -34,35 +34,38 @@ define([
         precision: '',
         requiredPrecision: '',
     };
-
+    
     var mixins = {
-
         getFormattedPrice: function (price) {
             var format = quote.getPriceFormat(),
                 newPattern = null,
                 newPrice = null;
-
+            
             if (price < 0 && format.showMinus && format.minusSign && format.symbol) {
                 newPrice = price * (-1);
-                switch (format.showMinus) {
-                    case 'before_value':
-                        newPattern = format.pattern.replace(content, format.minusSign + content);
-                        break;
-                    case 'after_value':
-                        newPattern = format.pattern.replace(content, content + format.minusSign);
-                        break;
-                    case 'before_symbol':
-                        newPattern = format.pattern.replace(format.symbol, format.minusSign + format.symbol);
-                        break;
-                    case 'after_symbol':
-                        newPattern = format.pattern.replace(format.symbol, format.symbol + format.minusSign);
-                        break;
-                    default:
-                        newPattern = format.pattern;
-                        newPrice = price * (-1);
-                        break;
+                
+                if (format.pattern.indexOf(format.symbol) === -1) {
+                    newPattern = format.minusSign + format.pattern;
+                }else {
+                    switch (format.showMinus) {
+                        case 'before_value':
+                            newPattern = format.pattern.replace(content, format.minusSign + content);
+                            break;
+                        case 'after_value':
+                            newPattern = format.pattern.replace(content, content + format.minusSign);
+                            break;
+                        case 'before_symbol':
+                            newPattern = format.pattern.replace(format.symbol, format.minusSign + format.symbol);
+                            break;
+                        case 'after_symbol':
+                            newPattern = format.pattern.replace(format.symbol, format.symbol + format.minusSign);
+                            break;
+                        default:
+                            newPattern = format.pattern;
+                            break;
+                    }
                 }
-
+                
                 $.each(newFormat, function (key, value) {
                     if (key === 'pattern') {
                         newFormat['pattern'] = newPattern;
@@ -70,16 +73,16 @@ define([
                         newFormat[key] = format[key];
                     }
                 });
-
+                
                 return priceUtils.formatPrice(newPrice, newFormat);
             }else {
                 return this._super(price);
             }
         },
     };
-
+    
     return function (AbstractTotal) {
         return AbstractTotal.extend(mixins);
-    }
+    };
 });
 

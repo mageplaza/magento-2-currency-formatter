@@ -291,6 +291,9 @@ class Data extends AbstractData
             case ShowSymbol::AFTER_WITH_SPACE:
                 return $content .' '. $symbol;
             case ShowSymbol::NONE:
+                if (isset($negative['minus_sign'])) {
+                    return $negative['minus_sign'] . $content;
+                }
                 return $content;
         }
         
