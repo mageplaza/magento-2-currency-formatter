@@ -61,12 +61,12 @@ define([
             _.each(this.mpCurrencies, function(currency) {
                 var useDefault = parseInt(currency.config.use_default, 10);
                 
-                self.toggleUseDefaultAbc(currency.code, useDefault);
-                self.createPreview(currency);
+                self.toggleUseDefault(currency.code, useDefault);
+                self.createPreview(currency, self);
             });
         },
         
-        createPreview: function (currency) {
+        createPreview: function (currency, parent) {
             var newConfig = currency.config,
                 firstResult = '49' + newConfig.group_separator + '456',
                 decimalPart = '0000',
@@ -85,18 +85,21 @@ define([
                 symbol += newConfig.minus_sign;
             }
             
-            var secondResult = firstResult + decimal,
-                thirdResult = null;
+            parent.finalizePreview(currency.code, firstResult + decimal, newConfig, symbol);
+        },
+        
+        finalizePreview: function (code, secondResult, config, symbol) {
+            var thirdResult = null;
             
-            if (newConfig.show_minus === 'before_value') {
-                secondResult = newConfig.minus_sign + secondResult;
+            if (config.show_minus === 'before_value') {
+                secondResult = config.minus_sign + secondResult;
             }
             
-            if (newConfig.show_minus === 'after_value') {
-                secondResult += newConfig.minus_sign;
+            if (config.show_minus === 'after_value') {
+                secondResult += config.minus_sign;
             }
             
-            switch (newConfig.show_symbol) {
+            switch (config.show_symbol) {
                 case 'before':
                     thirdResult = symbol + secondResult;
                     break;
@@ -111,34 +114,26 @@ define([
                     break;
                 default:
                     thirdResult = secondResult;
-                    if (newConfig.show_minus === 'after_symbol' || newConfig.show_minus === 'before_symbol') {
-                        thirdResult = newConfig.minus_sign + secondResult;
+                    if (config.show_minus === 'after_symbol' || config.show_minus === 'before_symbol') {
+                        thirdResult = config.minus_sign + secondResult;
                     }
                     break;
             }
             
-            $('#demo_'+ currency.code).text(thirdResult);
+            $('#demo_'+ code).text(thirdResult);
         },
         
-        useDefault: function (currency) {
+        useDefault: function (currency, parent) {
             if (parseInt(currency.config.use_default, 10)) {
                 currency.config.use_default = 0;
             }else {
                 currency.config.use_default = 1;
             }
             
-            if (currency.config.use_default) {
-                _.each(disableFields, function(field) {
-                    $(field + currency.code).attr('disabled', 'disabled');
-                });
-            }else {
-                _.each(disableFields, function(field) {
-                    $(field + currency.code).removeAttr('disabled');
-                });
-            }
+            parent.toggleUseDefault(currency.code, currency.config.use_default);
         },
         
-        toggleUseDefaultAbc: function (code, useDefault) {
+        toggleUseDefault: function (code, useDefault) {
             if (useDefault) {
                 _.each(disableFields, function(field) {
                     $(field + code).attr('disabled', 'disabled');
@@ -149,6 +144,5 @@ define([
                 });
             }
         },
-        
     });
 });

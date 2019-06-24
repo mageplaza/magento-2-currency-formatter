@@ -49,7 +49,7 @@
                             value: currency.config.use_default,
                             valueUpdate: 'keyup',
                             checked: currency.config.use_default === 1,
-                            event: {change: $parent.useDefault}"
+                            event: { change: function(data, event) {$parent.useDefault(data, $parent)}}"
                            type="checkbox"
                            class="checkbox">
                     <label data-bind="attr: {for: 'mpcurrencyformatter_use_default_' + currency.code}" class="inherit">
@@ -64,7 +64,7 @@
                             options: $parent.mpFormat.show_symbol,
                             optionsText: 'label',
                             optionsValue: 'value',
-                            event: { change: $parent.createPreview}">
+                            event: { change: function(data, event) {$parent.createPreview(data, $parent)}}">
                     </select>
                 </td>
                 <td>
@@ -75,7 +75,7 @@
                             options: $parent.mpFormat.group_separator,
                             optionsText: 'label',
                             optionsValue: 'value',
-                            event: { change: $parent.createPreview}">
+                            event: { change: function(data, event) {$parent.createPreview(data, $parent)}}">
                     </select>
                 </td>
                 <td>
@@ -86,7 +86,7 @@
                             options: $parent.mpFormat.decimal_number,
                             optionsText: 'label',
                             optionsValue: 'value',
-                            event: { change: $parent.createPreview}">
+                            event: { change: function(data, event) {$parent.createPreview(data, $parent)}}">
                     </select>
                 </td>
                 <td>
@@ -95,7 +95,7 @@
                                     id: 'mpcurrencyformatter_minus_sign_' + currency.code},
                             value: currency.config.minus_sign,
                             valueUpdate: 'keyup',
-                            event: { keyup: $parent.createPreview}">
+                            event: { keyup: function(data, event) {$parent.createPreview(data, $parent)}}">
                 </td>
                 <td></td>
             </tr>
@@ -129,7 +129,7 @@
                                     id: 'mpcurrencyformatter_symbol_' + currency.code},
                             value: currency.config.symbol,
                             valueUpdate: 'keyup',
-                            event: { keyup: $parent.createPreview}">
+                            event: { keyup: function(data, event) {$parent.createPreview(data, $parent)}}">
                 </td>
                 <td></td>
                 <td>
@@ -140,7 +140,7 @@
                             options: $parent.mpFormat.decimal_separator,
                             optionsText: 'label',
                             optionsValue: 'value',
-                            event: { change: $parent.createPreview}">
+                            event: { change: function(data, event) {$parent.createPreview(data, $parent)}}">
                     </select>
                 </td>
                 <td>
@@ -150,7 +150,7 @@
                             options: $parent.mpFormat.show_minus,
                             optionsText: 'label',
                             optionsValue: 'value',
-                            event: { change: $parent.createPreview}">
+                            event: { change: function(data, event) {$parent.createPreview(data, $parent)}}">
                     </select>
                 </td>
                 <td></td>

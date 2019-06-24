@@ -90,7 +90,7 @@ class Currencies extends AbstractFieldArray
         foreach ($availableCurrencies as $code) {
             $mpCurrencies[$code]['code'] = $code;
             $mpCurrencies[$code]['name'] = $this->_localeCurrency->getCurrency($code)->getName();
-            $mpCurrencies[$code]['config'] = $this->getElement()->getValue()[$code];
+            $mpCurrencies[$code]['config'] = $this->_helperData->getCurrencyConfig($code);
             $mpCurrencies[$code]['default'] = $this->getUseDefaultText();
             $mpCurrencies[$code]['base'] = self::BASE_SELECT_NAME;
         }
