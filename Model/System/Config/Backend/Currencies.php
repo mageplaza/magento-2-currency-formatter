@@ -32,6 +32,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Store\Model\ScopeInterface;
 
 /**
  * Class Currencies
@@ -84,56 +85,38 @@ class Currencies extends Value
         $this->_helperData = $helperData;
         parent::__construct($context, $registry, $config, $cacheTypeList, $resource, $resourceCollection, $data);
     }
-    
+
     /**
      * @return Value
+     * @throws NoSuchEntityException
      */
     public function beforeSave()
     {
         $value = $this->getValue();
-        
+        $scope = $this->getScope();
+
         /** @var array $value */
         foreach ($value as $key => $saveConfig) {
-            isset($saveConfig['use_default'])
-                ? $value[$key] = $this->_helperData->getCurrencyDefaultConfig($key)
-                : $value[$key]['use_default'] = '0';
+            if (isset($saveConfig['use_default'])) {
+                switch ($scope) {
+                    case ScopeInterface::SCOPE_WEBSITES:
+                        $value[$key] = $this->_helperData->getCurrencyConfig($key);
+                        $value[$key]['use_default'] = 1;
+                        break;
+                    case ScopeInterface::SCOPE_STORES:
+                        $value[$key] = $this->_helperData->getCurrencyWebsiteConfig($key, $this->getScopeId());
+                        $value[$key]['use_default'] = 1;
+                        break;
+                    default:
+                        unset($value[$key]);
+                }
+            }
         }
-        
-        $this->setValue($value);
+
         if (is_array($value)) {
             $this->setValue(HelperData::jsonEncode($value));
         }
         
         return parent::beforeSave();
-    }
-    
-    /**
-     * @return Value
-     * @throws NoSuchEntityException
-     */
-    protected function _afterLoad()
-    {
-        $configValue = $this->getValue();
-        $storeId = $this->_request->getParam('store', 0);
-        $currencyCodes = $this->_helperData->getCurrenciesByStore($storeId);
-        
-        if (!is_array($configValue)) {
-            $configValue = HelperData::jsonDecode($this->getValue());
-            foreach ($currencyCodes as $code) {
-                if (!isset($configValue[$code])) {
-                    $configValue[$code] = $this->_helperData->getCurrencyDefaultConfig($code);
-                }
-            }
-            
-            /** @var array $configValue */
-            foreach ($configValue as $key => $config) {
-                if (!in_array($key, $currencyCodes, true)) {
-                    unset($configValue[$key]);
-                }
-            }
-        }
-
-        $this->setValue($configValue);
-        return parent::_afterLoad();
     }
 }

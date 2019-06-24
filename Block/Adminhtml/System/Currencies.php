@@ -85,14 +85,24 @@ class Currencies extends AbstractFieldArray
     public function getStoreCurrencies()
     {
         $mpCurrencies = [];
+        $params = $this->getRequest()->getParams();
         $storeId = $this->getRequest()->getParam('store', 0);
         $availableCurrencies = $this->_helperData->getCurrenciesByStore($storeId);
+
+        if (isset($params['website'])) {
+            $availableCurrencies = $this->_helperData->getCurrenciesByWebsite($params['website']);
+        }
+
         foreach ($availableCurrencies as $code) {
             $mpCurrencies[$code]['code'] = $code;
             $mpCurrencies[$code]['name'] = $this->_localeCurrency->getCurrency($code)->getName();
             $mpCurrencies[$code]['config'] = $this->_helperData->getCurrencyConfig($code, $storeId);
             $mpCurrencies[$code]['default'] = $this->getUseDefaultText();
             $mpCurrencies[$code]['base'] = self::BASE_SELECT_NAME;
+
+            if (isset($params['website'])) {
+                $mpCurrencies[$code]['config'] = $this->_helperData->getCurrencyWebsiteConfig($code, 0, $params['website']);
+            }
         }
     
         return HelperData::jsonEncode(array_values($mpCurrencies));

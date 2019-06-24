@@ -35,6 +35,8 @@ use Mageplaza\CurrencyFormatter\Model\System\Config\Source\ShowMinus;
 use Magento\Framework\Locale\CurrencyInterface;
 use Mageplaza\CurrencyFormatter\Model\Locale\DefaultFormat;
 use Magento\Directory\Model\CurrencyFactory;
+use Magento\CurrencySymbol\Model\System\Currencysymbol;
+use Magento\Store\Model\ScopeInterface;
 
 /**
  * Class Data
@@ -44,7 +46,8 @@ class Data extends AbstractData
 {
     const CONFIG_MODULE_PATH = 'mpcurrencyformatter';
     const MINUS_SIGN = '-';
-    
+    const CURRENCY_WEBSITE = 'currency/options/allow';
+
     /**
      * @var DecimalNumber
      */
@@ -89,6 +92,11 @@ class Data extends AbstractData
      * @var CurrencyFactory
      */
     protected $_currencyFactory;
+
+    /**
+     * @var Currencysymbol
+     */
+    protected $_currencySymbol;
     
     /**
      * Data constructor.
@@ -117,7 +125,8 @@ class Data extends AbstractData
         CurrencyInterface $localeCurrency,
         DefaultFormat $defaultFormat,
         LocaleResolver $localeResolver,
-        CurrencyFactory $currencyFactory
+        CurrencyFactory $currencyFactory,
+        Currencysymbol $currencySymbol
     ) {
         $this->_decimalNumber = $decimalNumber;
         $this->_decimalSeparator = $decimalSeparator;
@@ -128,7 +137,8 @@ class Data extends AbstractData
         $this->_defaultFormat = $defaultFormat;
         $this->_localeResolver = $localeResolver;
         $this->_currencyFactory = $currencyFactory;
-    
+        $this->_currencySymbol = $currencySymbol;
+
         parent::__construct($context, $objectManager, $storeManager);
     }
     
@@ -166,7 +176,22 @@ class Data extends AbstractData
     }
 
     /**
-     * @param string $currencyCode
+     * @param mixed $websiteId
+     * @return array
+     * @throws NoSuchEntityException
+     */
+    public function getCurrenciesByWebsite($websiteId)
+    {
+        $codes = $this->getConfigValue(self::CURRENCY_WEBSITE,$websiteId,ScopeInterface::SCOPE_WEBSITES);
+        if ($codes !== null) {
+            return explode(',', $codes);
+        }
+
+        return $this->getCurrenciesByStore(0);
+    }
+
+    /**
+     * @param $currencyCode
      * @return array
      */
     public function getCurrencyDefaultConfig($currencyCode)
@@ -198,6 +223,29 @@ class Data extends AbstractData
             $currencyConfig[$code] = $this->getCurrencyDefaultConfig($code);
         }
         
+        return $currencyConfig[$code];
+    }
+
+    /**
+     * @param $code
+     * @param $storeId
+     * @param null $websiteId
+     * @return mixed
+     * @throws NoSuchEntityException
+     */
+    public function getCurrencyWebsiteConfig($code, $storeId, $websiteId = null)
+    {
+        $websiteId = ($websiteId === null) ? $this->storeManager->getStore($storeId)->getWebsiteId() : $websiteId;
+        $config = $this->getConfigValue(
+            self::CONFIG_MODULE_PATH . '/general/currencies',
+            $websiteId,
+            ScopeInterface::SCOPE_WEBSITES);
+        $currencyConfig = self::jsonDecode($config);
+
+        if (!isset($currencyConfig[$code])) {
+            $currencyConfig[$code] = $this->getCurrencyDefaultConfig($code);
+        }
+
         return $currencyConfig[$code];
     }
     
