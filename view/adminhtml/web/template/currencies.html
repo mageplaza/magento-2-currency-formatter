@@ -49,7 +49,7 @@
                             value: currency.config.use_default,
                             valueUpdate: 'keyup',
                             checked: currency.config.use_default === 1,
-                            event: { change: $parent.useDefault}"
+                            event: {change: $parent.useDefault}"
                            type="checkbox"
                            class="checkbox">
                     <label data-bind="attr: {for: 'mpcurrencyformatter_use_default_' + currency.code}" class="inherit">
@@ -61,7 +61,6 @@
                             attr: {name: currency.base + '[' + currency.code + ']' + '['+ 'show_symbol' + ']',
                                     id: 'mpcurrencyformatter_show_symbol_' + currency.code},
                             value: currency.config.show_symbol,
-                            disable: currency.config.use_default === 1,
                             options: $parent.mpFormat.show_symbol,
                             optionsText: 'label',
                             optionsValue: 'value',
@@ -73,7 +72,6 @@
                             attr: {name: currency.base + '[' + currency.code + ']' + '['+ 'group_separator' + ']',
                                     id: 'mpcurrencyformatter_group_separator_' + currency.code},
                             value: currency.config.group_separator,
-                            disable: currency.config.use_default === 1,
                             options: $parent.mpFormat.group_separator,
                             optionsText: 'label',
                             optionsValue: 'value',
@@ -85,7 +83,6 @@
                             attr: {name: currency.base + '[' + currency.code + ']' + '['+ 'decimal_number' + ']',
                                     id: 'mpcurrencyformatter_decimal_number_' + currency.code},
                             value: currency.config.decimal_number,
-                            disable: currency.config.use_default === 1,
                             options: $parent.mpFormat.decimal_number,
                             optionsText: 'label',
                             optionsValue: 'value',
@@ -97,7 +94,6 @@
                             attr: {name: currency.base + '[' + currency.code + ']' + '['+ 'minus_sign' + ']',
                                     id: 'mpcurrencyformatter_minus_sign_' + currency.code},
                             value: currency.config.minus_sign,
-                            disable: currency.config.use_default === 1,
                             valueUpdate: 'keyup',
                             event: { keyup: $parent.createPreview}">
                 </td>
@@ -122,7 +118,7 @@
                     </label>
                 </td>
                 <td>
-                    <span data-bind="text: $parent.previewDemo"></span>
+                    <span data-bind="attr: {id: 'demo_' + currency.code}"></span>
                 </td>
             </tr>
             <tr class="mp-currency-data">
@@ -132,7 +128,6 @@
                             attr: {name: currency.base + '[' + currency.code + ']' + '['+ 'symbol' + ']',
                                     id: 'mpcurrencyformatter_symbol_' + currency.code},
                             value: currency.config.symbol,
-                            disable: currency.config.use_default === 1,
                             valueUpdate: 'keyup',
                             event: { keyup: $parent.createPreview}">
                 </td>
@@ -142,7 +137,6 @@
                             attr: {name: currency.base + '[' + currency.code + ']' + '['+ 'decimal_separator' + ']',
                                     id: 'mpcurrencyformatter_decimal_separator_' + currency.code},
                             value: currency.config.decimal_separator,
-                            disable: currency.config.use_default === 1,
                             options: $parent.mpFormat.decimal_separator,
                             optionsText: 'label',
                             optionsValue: 'value',
@@ -153,7 +147,6 @@
                     <select data-bind="attr: {name: currency.base + '[' + currency.code + ']' + '['+ 'show_minus' + ']',
                                     id: 'mpcurrencyformatter_show_minus_' + currency.code},
                             value: currency.config.show_minus,
-                            disable: currency.config.use_default === 1,
                             options: $parent.mpFormat.show_minus,
                             optionsText: 'label',
                             optionsValue: 'value',

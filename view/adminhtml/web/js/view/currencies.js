@@ -22,9 +22,20 @@ define([
     'ko',
     'underscore',
     'uiComponent',
-], function($, ko, _, Component) {
+    'rjsResolver'
+], function($, ko, _, Component, resolver) {
     'use strict';
-
+    
+    var disableFields = [
+        '#mpcurrencyformatter_show_symbol_',
+        '#mpcurrencyformatter_group_separator_',
+        '#mpcurrencyformatter_decimal_number_',
+        '#mpcurrencyformatter_minus_sign_',
+        '#mpcurrencyformatter_symbol_',
+        '#mpcurrencyformatter_decimal_separator_',
+        '#mpcurrencyformatter_show_minus_',
+    ];
+    
     return Component.extend({
         defaults: {
             template: 'Mageplaza_CurrencyFormatter/currencies'
@@ -32,62 +43,59 @@ define([
         previewDemo : ko.observable('preview Demo'),
         currencyConfig : $('#row_mpcurrencyformatter_general_currencies td.value'),
         useDefaultClass : $('#row_mpcurrencyformatter_general_currencies td.use-default'),
-        disableFields : [
-            '#mpcurrencyformatter_show_symbol_',
-            '#mpcurrencyformatter_group_separator_',
-            '#mpcurrencyformatter_decimal_number_',
-            '#mpcurrencyformatter_minus_sign_',
-            '#mpcurrencyformatter_symbol_',
-            '#mpcurrencyformatter_decimal_separator_',
-            '#mpcurrencyformatter_show_minus_sign_',
-        ],
-
+        
         initialize: function () {
-            var self = this;
-
             this._super();
-
+            
             this.currencyConfig.attr('colspan', '2');
             if (this.useDefaultClass) {
                 this.useDefaultClass.remove();
             }
-            this.createPreview();
+            
+            resolver(this.afterResolveDocument.bind(this));
         },
-
-        useDefault: function () {
-            console.log(this);
+        
+        afterResolveDocument: function () {
+            var self = this;
+            
+            _.each(this.mpCurrencies, function(currency) {
+                var useDefault = parseInt(currency.config.use_default, 10);
+                
+                self.toggleUseDefaultAbc(currency.code, useDefault);
+                self.createPreview(currency);
+            });
         },
-
+        
         createPreview: function (currency) {
             var newConfig = currency.config,
                 firstResult = '49' + newConfig.group_separator + '456',
                 decimalPart = '0000',
                 decimal = '',
                 symbol = newConfig.symbol;
-
+            
             if (newConfig.decimal_number > 0) {
                 decimal = newConfig.decimal_separator + decimalPart.substr(0, newConfig.decimal_number);
             }
-
+            
             if (newConfig.show_minus === 'before_symbol') {
                 symbol = newConfig.minus_sign + symbol;
             }
-
+            
             if (newConfig.show_minus === 'after_symbol') {
-                symbol = symbol + newConfig.minus_sign;
+                symbol += newConfig.minus_sign;
             }
-
+            
             var secondResult = firstResult + decimal,
                 thirdResult = null;
-
+            
             if (newConfig.show_minus === 'before_value') {
                 secondResult = newConfig.minus_sign + secondResult;
             }
-
+            
             if (newConfig.show_minus === 'after_value') {
-                secondResult = secondResult + newConfig.minus_sign;
+                secondResult += newConfig.minus_sign;
             }
-
+            
             switch (newConfig.show_symbol) {
                 case 'before':
                     thirdResult = symbol + secondResult;
@@ -105,9 +113,39 @@ define([
                     thirdResult = secondResult;
                     break;
             }
-
-            self.previewDemo(thirdResult);
+            
+            $('#demo_'+ currency.code).text(thirdResult);
         },
-
+        
+        useDefault: function (currency) {
+            if (parseInt(currency.config.use_default, 10)) {
+                currency.config.use_default = 0;
+            }else {
+                currency.config.use_default = 1;
+            }
+            
+            if (currency.config.use_default) {
+                _.each(disableFields, function(field) {
+                    $(field + currency.code).attr('disabled', 'disabled');
+                });
+            }else {
+                _.each(disableFields, function(field) {
+                    $(field + currency.code).removeAttr('disabled');
+                });
+            }
+        },
+        
+        toggleUseDefaultAbc: function (code, useDefault) {
+            if (useDefault) {
+                _.each(disableFields, function(field) {
+                    $(field + code).attr('disabled', 'disabled');
+                });
+            }else {
+                _.each(disableFields, function(field) {
+                    $(field + code).removeAttr('disabled');
+                });
+            }
+        },
+        
     });
 });
