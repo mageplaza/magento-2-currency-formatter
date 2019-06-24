@@ -234,7 +234,12 @@ class Data extends AbstractData
         }
 
         if ($decimal === 0) {
-            $processedCurrency = $this->processShowSymbol($config['symbol'], $result, $config['show_symbol'], $negative);
+            $processedCurrency = $this->processShowSymbol(
+                $config['symbol'],
+                $result,
+                $config['show_symbol'],
+                $negative
+            );
             return str_replace($original['groupSymbol'], $config['group_separator'], $processedCurrency);
         }
 

@@ -27,4 +27,7 @@
     <type name='Magento\Directory\Model\Currency'>
         <plugin name='mp-currency-formatter-directory-currency' type='Mageplaza\CurrencyFormatter\Plugin\Directory\Currency'/>
     </type>
+    <type name='Magento\Sales\Model\Order'>
+        <plugin name='mp-currency-formatter-sale-order' type='Mageplaza\CurrencyFormatter\Plugin\Sale\Order'/>
+    </type>
 </config>

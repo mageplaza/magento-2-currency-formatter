@@ -21,10 +21,13 @@
 
 namespace Mageplaza\CurrencyFormatter\Plugin;
 
+use Magento\Framework\Locale\CurrencyInterface;
+use Magento\Framework\Locale\FormatInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Mageplaza\CurrencyFormatter\Helper\Data as HelperData;
 use Magento\Framework\Locale\ResolverInterface;
+use Mageplaza\CurrencyFormatter\Model\Locale\DefaultFormat;
 
 /**
  * Class AbstractFormat
@@ -48,19 +51,43 @@ abstract class AbstractFormat
     protected $_localeResolver;
     
     /**
+     * @var CurrencyInterface
+     */
+    protected $_localeCurrency;
+    
+    /**
+     * @var FormatInterface
+     */
+    protected $_localeFormat;
+    
+    /**
+     * @var DefaultFormat
+     */
+    protected $_defaultFormat;
+    
+    /**
      * AbstractFormat constructor.
      * @param StoreManagerInterface $storeManager
      * @param HelperData $helperData
      * @param ResolverInterface $localeResolver
+     * @param CurrencyInterface $localeCurrency
+     * @param FormatInterface $localeFormat
+     * @param DefaultFormat $defaultFormat
      */
     public function __construct(
         StoreManagerInterface $storeManager,
         HelperData $helperData,
-        ResolverInterface $localeResolver
+        ResolverInterface $localeResolver,
+        CurrencyInterface $localeCurrency,
+        FormatInterface $localeFormat,
+        DefaultFormat $defaultFormat
     ) {
         $this->_helperData = $helperData;
         $this->_storeManager = $storeManager;
         $this->_localeResolver = $localeResolver;
+        $this->_localeCurrency = $localeCurrency;
+        $this->_localeFormat = $localeFormat;
+        $this->_defaultFormat = $defaultFormat;
     }
     
     /**

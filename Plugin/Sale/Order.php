@@ -19,49 +19,56 @@
  * @license     https://www.mageplaza.com/LICENSE.txt
  */
 
-namespace Mageplaza\CurrencyFormatter\Plugin\Directory;
+namespace Mageplaza\CurrencyFormatter\Plugin\Sale;
 
-use Magento\Directory\Model\Currency as DirectoryCurrency;
+use Magento\Sales\Model\Order as SaleOrder;
 use Mageplaza\CurrencyFormatter\Plugin\AbstractFormat;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Zend_Currency;
+use Magento\Framework\Exception\NoSuchEntityException;
 
 /**
- * Class Currency
- * @package Mageplaza\CurrencyFormatter\Plugin\Directory
+ * Class Order
+ * @package Mageplaza\CurrencyFormatter\Plugin\Sale
  */
-class Currency extends AbstractFormat
+class Order extends AbstractFormat
 {
     /**
-     * @param DirectoryCurrency $subject
+     * @param SaleOrder $subject
      * @param callable $proceed
      * @param $price
-     * @param array $options
-     * @return string
+     * @param $precision
+     * @param bool $addBrackets
+     * @return mixed
      * @throws NoSuchEntityException
      * @throws \Zend_Currency_Exception
      */
-    public function aroundFormatTxt(DirectoryCurrency $subject, callable $proceed, $price, $options = [])
-    {
+    public function aroundFormatPricePrecision(
+        SaleOrder $subject,
+        callable $proceed,
+        $price,
+        $precision,
+        $addBrackets = false
+    ) {
         if (!$this->_helperData->isEnabled()) {
-            return $proceed($price, $options = []);
+            return $proceed($price, $precision, $addBrackets = false);
         }
-
-        $currency= $this->getCurrencyCode();
+        
+        $currency= $subject->getOrderCurrencyCode();
         $locale = $this->getLocaleCode();
         $original = $this->_defaultFormat->getFormat($locale, $currency);
         $config = $this->getFormatByCurrency($currency);
         $decimal = (int) $config['decimal_number'];
-
+    
         if (!is_numeric($price)) {
             $price = $this->_localeFormat->getNumber($price);
         }
-        
+    
         $price = sprintf('%F', $price);
         $options['precision'] = $decimal;
         $options['display'] = Zend_Currency::NO_SYMBOL;
         $firstResult = $this->_localeCurrency->getCurrency($currency)->toCurrency($price, $options);
         $finalResult = $this->_helperData->getDirectoryCurrency($firstResult, $decimal, $original, $config);
+    
         return $finalResult;
     }
 }
