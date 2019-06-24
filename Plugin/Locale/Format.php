@@ -45,7 +45,7 @@ class Format extends AbstractFormat
         
         $code = $this->getCurrencyCode();
         $config = $this->getFormatByCurrency($code);
-        
+
         $result['pattern'] = $this->_helperData->getLocaleShowSymbol($code, $config['show_symbol'], $config['symbol']);
         $result['precision'] = $config['decimal_number'];
         $result['requiredPrecision'] = $config['decimal_number'];

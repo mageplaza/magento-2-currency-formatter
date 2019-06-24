@@ -23,7 +23,6 @@ namespace Mageplaza\CurrencyFormatter\Plugin\Sale;
 
 use Magento\Sales\Model\Order as SaleOrder;
 use Mageplaza\CurrencyFormatter\Plugin\AbstractFormat;
-use Zend_Currency;
 use Magento\Framework\Exception\NoSuchEntityException;
 
 /**
@@ -50,25 +49,10 @@ class Order extends AbstractFormat
         $addBrackets = false
     ) {
         if (!$this->_helperData->isEnabled()) {
-            return $proceed($price, $precision, $addBrackets = false);
+            return $proceed($price, $precision, $addBrackets);
         }
         
         $currency= $subject->getOrderCurrencyCode();
-        $locale = $this->getLocaleCode();
-        $original = $this->_defaultFormat->getFormat($locale, $currency);
-        $config = $this->getFormatByCurrency($currency);
-        $decimal = (int) $config['decimal_number'];
-    
-        if (!is_numeric($price)) {
-            $price = $this->_localeFormat->getNumber($price);
-        }
-    
-        $price = sprintf('%F', $price);
-        $options['precision'] = $decimal;
-        $options['display'] = Zend_Currency::NO_SYMBOL;
-        $firstResult = $this->_localeCurrency->getCurrency($currency)->toCurrency($price, $options);
-        $finalResult = $this->_helperData->getDirectoryCurrency($firstResult, $decimal, $original, $config);
-    
-        return $finalResult;
+        return $this->formatCurrencyText($currency, $price);
     }
 }

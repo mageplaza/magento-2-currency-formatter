@@ -28,6 +28,7 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Mageplaza\CurrencyFormatter\Helper\Data as HelperData;
 use Magento\Framework\Locale\ResolverInterface;
 use Mageplaza\CurrencyFormatter\Model\Locale\DefaultFormat;
+use Zend_Currency;
 
 /**
  * Class AbstractFormat
@@ -126,5 +127,32 @@ abstract class AbstractFormat
     public function getLocaleCode()
     {
         return $this->_localeResolver->getLocale();
+    }
+    
+    /**
+     * @param $currency
+     * @param $price
+     * @return mixed|string
+     * @throws NoSuchEntityException
+     * @throws \Zend_Currency_Exception
+     */
+    public function formatCurrencyText($currency, $price)
+    {
+        $locale = $this->getLocaleCode();
+        $original = $this->_defaultFormat->getFormat($locale, $currency);
+        $config = $this->getFormatByCurrency($currency);
+        $decimal = (int) $config['decimal_number'];
+    
+        if (!is_numeric($price)) {
+            $price = $this->_localeFormat->getNumber($price);
+        }
+    
+        $price = sprintf('%F', $price);
+        $options['precision'] = $decimal;
+        $options['display'] = Zend_Currency::NO_SYMBOL;
+        $firstResult = $this->_localeCurrency->getCurrency($currency)->toCurrency($price, $options);
+        $finalResult = $this->_helperData->getDirectoryCurrency($firstResult, $decimal, $original, $config);
+    
+        return $finalResult;
     }
 }

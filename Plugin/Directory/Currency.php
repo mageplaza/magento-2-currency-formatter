@@ -24,7 +24,6 @@ namespace Mageplaza\CurrencyFormatter\Plugin\Directory;
 use Magento\Directory\Model\Currency as DirectoryCurrency;
 use Mageplaza\CurrencyFormatter\Plugin\AbstractFormat;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Zend_Currency;
 
 /**
  * Class Currency
@@ -48,20 +47,6 @@ class Currency extends AbstractFormat
         }
 
         $currency= $subject->getCurrencyCode();
-        $locale = $this->getLocaleCode();
-        $original = $this->_defaultFormat->getFormat($locale, $currency);
-        $config = $this->getFormatByCurrency($currency);
-        $decimal = (int) $config['decimal_number'];
-
-        if (!is_numeric($price)) {
-            $price = $this->_localeFormat->getNumber($price);
-        }
-        
-        $price = sprintf('%F', $price);
-        $options['precision'] = $decimal;
-        $options['display'] = Zend_Currency::NO_SYMBOL;
-        $firstResult = $this->_localeCurrency->getCurrency($currency)->toCurrency($price, $options);
-        $finalResult = $this->_helperData->getDirectoryCurrency($firstResult, $decimal, $original, $config);
-        return $finalResult;
+        return $this->formatCurrencyText($currency, $price);
     }
 }
