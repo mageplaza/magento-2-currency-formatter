@@ -44,10 +44,10 @@ class Currency extends AbstractFormat
     public function aroundFormatTxt(DirectoryCurrency $subject, callable $proceed, $price, $options = [])
     {
         if (!$this->_helperData->isEnabled()) {
-            return $proceed($price, $options = []);
+            return $proceed($price, $options);
         }
 
-        $currency= $this->getCurrencyCode();
+        $currency= $subject->getCurrencyCode();
         $locale = $this->getLocaleCode();
         $original = $this->_defaultFormat->getFormat($locale, $currency);
         $config = $this->getFormatByCurrency($currency);

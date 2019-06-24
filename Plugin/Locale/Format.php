@@ -54,7 +54,7 @@ class Format extends AbstractFormat
         $result['showMinus'] = $config['show_minus'];
         $result['symbol'] = $config['symbol'];
         $result['minusSign'] = $config['minus_sign'];
-
+        
         return $result;
     }
 }

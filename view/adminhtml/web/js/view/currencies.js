@@ -111,6 +111,9 @@ define([
                     break;
                 default:
                     thirdResult = secondResult;
+                    if (newConfig.show_minus === 'after_symbol' || newConfig.show_minus === 'before_symbol') {
+                        thirdResult = newConfig.minus_sign + secondResult;
+                    }
                     break;
             }
             
