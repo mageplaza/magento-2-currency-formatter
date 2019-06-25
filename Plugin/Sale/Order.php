@@ -48,11 +48,11 @@ class Order extends AbstractFormat
         $precision,
         $addBrackets = false
     ) {
-        if (!$this->_helperData->isEnabled()) {
+        if (!$this->_helperData->isEnabled(0)) {
             return $proceed($price, $precision, $addBrackets);
         }
         
         $currency= $subject->getOrderCurrencyCode();
-        return $this->formatCurrencyText($currency, $price);
+        return $this->formatCurrencyText($currency, $price, $subject->getStoreId());
     }
 }

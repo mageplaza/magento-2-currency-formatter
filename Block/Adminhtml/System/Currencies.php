@@ -26,6 +26,7 @@ use Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray;
 use Mageplaza\CurrencyFormatter\Helper\Data as HelperData;
 use Magento\Framework\Locale\CurrencyInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Store\Model\ScopeInterface;
 
 /**
  * Class Currencies
@@ -82,29 +83,20 @@ class Currencies extends AbstractFieldArray
      * @return string
      * @throws NoSuchEntityException
      */
-    public function getStoreCurrencies()
+    public function getAllowedCurrencies()
     {
         $mpCurrencies = [];
-        $params = $this->getRequest()->getParams();
-        $storeId = $this->getRequest()->getParam('store', 0);
-        $availableCurrencies = $this->_helperData->getCurrenciesByStore($storeId);
-
-        if (isset($params['website'])) {
-            $availableCurrencies = $this->_helperData->getCurrenciesByWebsite($params['website']);
-        }
-
+        $scopeData = $this->getScopeData($this->getRequest()->getParams());
+        $availableCurrencies = $this->_helperData->getAllowedCurrenciesByScope($scopeData);
+        
         foreach ($availableCurrencies as $code) {
             $mpCurrencies[$code]['code'] = $code;
             $mpCurrencies[$code]['name'] = $this->_localeCurrency->getCurrency($code)->getName();
-            $mpCurrencies[$code]['config'] = $this->_helperData->getCurrencyConfig($code, $storeId);
-            $mpCurrencies[$code]['default'] = $this->getUseDefaultText();
+            $mpCurrencies[$code]['config'] = $this->_helperData->getCurrencyConfigByScope($code, $scopeData);
+            $mpCurrencies[$code]['default'] = $scopeData['defaultTxt'];
             $mpCurrencies[$code]['base'] = self::BASE_SELECT_NAME;
-
-            if (isset($params['website'])) {
-                $mpCurrencies[$code]['config'] = $this->_helperData->getCurrencyWebsiteConfig($code, 0, $params['website']);
-            }
+            
         }
-    
         return HelperData::jsonEncode(array_values($mpCurrencies));
     }
 
@@ -115,22 +107,33 @@ class Currencies extends AbstractFieldArray
     {
         return HelperData::jsonEncode($this->_helperData->getFormatOptions());
     }
-
+    
     /**
-     * @return \Magento\Framework\Phrase
+     * @param array $params
+     * @return array
      */
-    public function getUseDefaultText()
+    public function getScopeData($params)
     {
-        $storeId = (int) $this->getRequest()->getParam('store', 0);
-        if ($storeId !== 0) {
-            return __('Use Website');
+        if (isset($params['website']) && (int)$params['website'] !== 0) {
+            return [
+                'id' => $params['website'],
+                'defaultTxt' => __('Use Default'),
+                'type' => ScopeInterface::SCOPE_WEBSITE
+            ];
         }
-        
-        $websiteId = (int) $this->getRequest()->getParam('website', 0);
-        if ($websiteId !== 0) {
-            return __('Use Default');
+    
+        if (isset($params['store']) && (int)$params['store'] !== 0) {
+            return [
+                'id' => $params['store'],
+                'defaultTxt' => __('Use Website'),
+                'type' => ScopeInterface::SCOPE_STORE
+            ];
         }
-        
-        return __('Use System');
+    
+        return [
+            'id' => 0,
+            'defaultTxt' => __('Use System'),
+            'type' => null
+        ];
     }
 }

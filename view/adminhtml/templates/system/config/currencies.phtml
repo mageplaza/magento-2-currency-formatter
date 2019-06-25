@@ -22,7 +22,7 @@
 
 <?php
 /** @var Mageplaza\CurrencyFormatter\Block\Adminhtml\System\Currencies $block */
-
+$block->getAllowedCurrencies()
 ?>
 
 <div id="mp-currency-formatter" data-bind="scope: 'mpcurrencyformatter'">
@@ -37,7 +37,7 @@
                     "mpcurrencyformatter": {
                         "component": "Mageplaza_CurrencyFormatter/js/view/currencies",
                         "config" : {
-                            "mpCurrencies" : <?= /* @noEscape */ $block->getStoreCurrencies() ?>,
+                            "mpCurrencies" : <?= /* @noEscape */ $block->getAllowedCurrencies() ?>,
                             "mpFormat" : <?= /* @noEscape */ $block->getFormatOptions() ?>
                         }
                     }

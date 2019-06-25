@@ -33,4 +33,7 @@
     <type name='Magento\Catalog\Ui\Component\Listing\Columns\Price'>
         <plugin name='mp-currency-formatter-product-price' type='Mageplaza\CurrencyFormatter\Plugin\Component\Price'/>
     </type>
+    <type name='Magento\Sales\Ui\Component\Listing\Column\PurchasedPrice'>
+        <plugin name='mp-currency-formatter-sale-order-grid' type='Mageplaza\CurrencyFormatter\Plugin\Sale\Component\PurchasedPrice'/>
+    </type>
 </config>

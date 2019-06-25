@@ -110,13 +110,14 @@ abstract class AbstractFormat
     }
     
     /**
-     * @param $currencyCode
+     * @param string $currencyCode
+     * @param null $storeId
      * @return mixed
      * @throws NoSuchEntityException
      */
-    public function getFormatByCurrency($currencyCode)
+    public function getFormatByCurrency($currencyCode, $storeId = null)
     {
-        $storeId = $this->getStoreId();
+        $storeId = ($storeId === null) ? $this->getStoreId() : $storeId;
         
         return $this->_helperData->getCurrencyConfig($currencyCode, $storeId);
     }
@@ -130,17 +131,18 @@ abstract class AbstractFormat
     }
     
     /**
-     * @param $currency
-     * @param $price
+     * @param string $currency
+     * @param mixed $price
+     * @param null $storeId
      * @return mixed|string
      * @throws NoSuchEntityException
      * @throws \Zend_Currency_Exception
      */
-    public function formatCurrencyText($currency, $price)
+    public function formatCurrencyText($currency, $price, $storeId = null)
     {
         $locale = $this->getLocaleCode();
         $original = $this->_defaultFormat->getFormat($locale, $currency);
-        $config = $this->getFormatByCurrency($currency);
+        $config = $this->getFormatByCurrency($currency, $storeId);
         $decimal = (int) $config['decimal_number'];
     
         if (!is_numeric($price)) {

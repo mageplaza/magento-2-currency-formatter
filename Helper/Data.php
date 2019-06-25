@@ -112,6 +112,7 @@ class Data extends AbstractData
      * @param DefaultFormat $defaultFormat
      * @param LocaleResolver $localeResolver
      * @param CurrencyFactory $currencyFactory
+     * @param Currencysymbol $currencySymbol
      */
     public function __construct(
         Context $context,
@@ -162,40 +163,91 @@ class Data extends AbstractData
      */
     public function getCurrencySymbol($currency)
     {
-        $symbol = $this->_localeCurrency->getCurrency($currency)->getSymbol();
-        if ($symbol === null) {
+        $localeCurrency = $this->_localeCurrency->getCurrency($currency);
+        if ($localeCurrency->getSymbol() === null) {
             $symbolData = $this->_currencySymbol->getCurrencySymbolsData();
-            return $symbolData[$currency]['displaySymbol'];
+            if (isset($symbolData[$currency]['displaySymbol'])) {
+                return $symbolData[$currency]['displaySymbol'];
+            }
+            return $currency;
         }
         
-        return $symbol;
+        return $localeCurrency->getSymbol();
     }
     
     /**
-     * @param mixed $storeId
+     * @param array $scopeData
      * @return array
      * @throws NoSuchEntityException
      */
-    public function getCurrenciesByStore($storeId)
+    public function getAllowedCurrenciesByScope($scopeData)
     {
-        return $this->storeManager->getStore($storeId)->getAvailableCurrencyCodes();
-    }
-
-    /**
-     * @param mixed $websiteId
-     * @return array
-     * @throws NoSuchEntityException
-     */
-    public function getCurrenciesByWebsite($websiteId)
-    {
-        $codes = $this->getConfigValue(self::CURRENCY_WEBSITE, $websiteId, ScopeInterface::SCOPE_WEBSITES);
-        if ($codes !== null) {
-            return explode(',', $codes);
+        if ($scopeData['type'] === ScopeInterface::SCOPE_WEBSITE) {
+            $codes = $this->getConfigValue(self::CURRENCY_WEBSITE, $scopeData['id'], ScopeInterface::SCOPE_WEBSITE);
+            if ($codes !== null) {
+                return explode(',', $codes);
+            }
         }
-
-        return $this->getCurrenciesByStore(0);
+    
+        if ($scopeData['type'] === ScopeInterface::SCOPE_STORE) {
+            return $this->storeManager->getStore($scopeData['id'])->getAvailableCurrencyCodes();
+        }
+    
+        return $this->storeManager->getStore(0)->getAvailableCurrencyCodes();
     }
-
+    
+    /**
+     * @param string $code
+     * @param array $scopeData
+     * @return mixed
+     * @throws NoSuchEntityException
+     */
+    public function getCurrencyConfigByScope($code, $scopeData)
+    {
+        if ($scopeData['type'] === ScopeInterface::SCOPE_WEBSITE) {
+            $default = self::jsonDecode($this->getConfigGeneral('currencies', 0));
+    
+            $webSiteConfig = self::jsonDecode($this->getConfigValue(
+                self::CONFIG_MODULE_PATH . '/general/currencies',
+                $scopeData['id'],
+                ScopeInterface::SCOPE_WEBSITE
+            ));
+            
+            if (!isset($webSiteConfig[$code])) {
+                $webSiteConfig[$code] = $this->getCurrencyDefaultConfig($code);
+            }
+            
+            if (isset($default[$code]) && empty(array_diff($webSiteConfig[$code], $default[$code]))) {
+                $webSiteConfig[$code]['use_default'] = 1;
+            }
+            
+            return $webSiteConfig[$code];
+        }
+    
+        if ($scopeData['type'] === ScopeInterface::SCOPE_STORE) {
+            $websiteId = $this->storeManager->getStore($scopeData['id'])->getWebsiteId();
+            $defaultWebsite = self::jsonDecode($this->getConfigValue(
+                self::CONFIG_MODULE_PATH . '/general/currencies',
+                $websiteId,
+                ScopeInterface::SCOPE_WEBSITE
+            ));
+            
+            $storeConfig = self::jsonDecode($this->getConfigGeneral('currencies', $scopeData['id']));
+    
+            if (!isset($storeConfig[$code])) {
+                $storeConfig[$code] = $this->getCurrencyDefaultConfig($code);
+            }
+    
+            if (isset($defaultWebsite[$code]) && empty(array_diff($defaultWebsite[$code], $storeConfig[$code]))) {
+                $storeConfig[$code]['use_default'] = 1;
+            }
+            
+            return $storeConfig[$code];
+        }
+        
+        return $this->getCurrencyConfig($code, 0);
+    }
+    
     /**
      * @param $currencyCode
      * @return array
@@ -228,31 +280,7 @@ class Data extends AbstractData
         if (!isset($currencyConfig[$code])) {
             $currencyConfig[$code] = $this->getCurrencyDefaultConfig($code);
         }
-        
-        return $currencyConfig[$code];
-    }
-
-    /**
-     * @param $code
-     * @param $storeId
-     * @param null $websiteId
-     * @return mixed
-     * @throws NoSuchEntityException
-     */
-    public function getCurrencyWebsiteConfig($code, $storeId, $websiteId = null)
-    {
-        $websiteId = ($websiteId === null) ? $this->storeManager->getStore($storeId)->getWebsiteId() : $websiteId;
-        $config = $this->getConfigValue(
-            self::CONFIG_MODULE_PATH . '/general/currencies',
-            $websiteId,
-            ScopeInterface::SCOPE_WEBSITES
-        );
-        $currencyConfig = self::jsonDecode($config);
-
-        if (!isset($currencyConfig[$code])) {
-            $currencyConfig[$code] = $this->getCurrencyDefaultConfig($code);
-        }
-
+    
         return $currencyConfig[$code];
     }
     

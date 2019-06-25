@@ -23,6 +23,7 @@ namespace Mageplaza\CurrencyFormatter\Plugin\Component;
 
 use Magento\Catalog\Ui\Component\Listing\Columns\Price as ComponentPrice;
 use Mageplaza\CurrencyFormatter\Plugin\AbstractFormat;
+use Magento\Store\Model\Store;
 
 /**
  * Class Price
@@ -40,20 +41,22 @@ class Price extends AbstractFormat
      */
     public function aroundPrepareDataSource(ComponentPrice $subject, callable $proceed, array $dataSource)
     {
-        if (!$this->_helperData->isEnabled()) {
+        if (!$this->_helperData->isEnabled(0)) {
             return $proceed($dataSource);
         }
     
         if (isset($dataSource['data']['items'])) {
-            $store = $this->_storeManager->getStore(
-                $subject->getContext()->getFilterParam('store_id', \Magento\Store\Model\Store::DEFAULT_STORE_ID)
-            );
+            $store = $this->_storeManager->getStore(Store::DEFAULT_STORE_ID);
             $currency = $store->getBaseCurrencyCode();
-            
+            $storeId = $store->getId();
             $fieldName = $subject->getData('name');
             foreach ($dataSource['data']['items'] as & $item) {
                 if (isset($item[$fieldName])) {
-                    $item[$fieldName] = $this->formatCurrencyText($currency, sprintf('%f', $item[$fieldName]));
+                    $item[$fieldName] = $this->formatCurrencyText(
+                        $currency,
+                        sprintf('%f', $item[$fieldName]),
+                        $storeId
+                    );
                 }
             }
         }
