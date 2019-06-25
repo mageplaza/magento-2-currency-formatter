@@ -37,6 +37,8 @@ use Mageplaza\CurrencyFormatter\Model\Locale\DefaultFormat;
 use Magento\Directory\Model\CurrencyFactory;
 use Magento\CurrencySymbol\Model\System\Currencysymbol;
 use Magento\Store\Model\ScopeInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Mageplaza\CurrencyFormatter\Model\Resource\Configuration as ResourceConfiguration;
 
 /**
  * Class Data
@@ -47,6 +49,7 @@ class Data extends AbstractData
     const CONFIG_MODULE_PATH = 'mpcurrencyformatter';
     const MINUS_SIGN = '-';
     const CURRENCY_WEBSITE = 'currency/options/allow';
+    const CONFIG_PATH = 'mpcurrencyformatter/general/currencies';
 
     /**
      * @var DecimalNumber
@@ -97,7 +100,12 @@ class Data extends AbstractData
      * @var Currencysymbol
      */
     protected $_currencySymbol;
-    
+
+    /**
+     * @var ResourceConfiguration
+     */
+    protected $_resourceConfig;
+
     /**
      * Data constructor.
      * @param Context $context
@@ -113,6 +121,7 @@ class Data extends AbstractData
      * @param LocaleResolver $localeResolver
      * @param CurrencyFactory $currencyFactory
      * @param Currencysymbol $currencySymbol
+     * @param ResourceConfiguration $resourceConfig
      */
     public function __construct(
         Context $context,
@@ -127,7 +136,8 @@ class Data extends AbstractData
         DefaultFormat $defaultFormat,
         LocaleResolver $localeResolver,
         CurrencyFactory $currencyFactory,
-        Currencysymbol $currencySymbol
+        Currencysymbol $currencySymbol,
+        ResourceConfiguration $resourceConfig
     ) {
         $this->_decimalNumber = $decimalNumber;
         $this->_decimalSeparator = $decimalSeparator;
@@ -139,6 +149,7 @@ class Data extends AbstractData
         $this->_localeResolver = $localeResolver;
         $this->_currencyFactory = $currencyFactory;
         $this->_currencySymbol = $currencySymbol;
+        $this->_resourceConfig = $resourceConfig;
 
         parent::__construct($context, $objectManager, $storeManager);
     }
@@ -174,7 +185,28 @@ class Data extends AbstractData
         
         return $localeCurrency->getSymbol();
     }
-    
+
+    /**
+     * @param string $currencyCode
+     * @return array
+     */
+    public function getCurrencyDefaultConfig($currencyCode)
+    {
+        $currentLocale = $this->_localeResolver->getLocale();
+        $defaultConfig = $this->_defaultFormat->getFormat($currentLocale, $currencyCode);
+
+        return [
+            'use_default' => 1,
+            'decimal_number' => $defaultConfig['requiredPrecision'],
+            'decimal_separator' => $defaultConfig['decimalSymbol'],
+            'group_separator' => $defaultConfig['groupSymbol'],
+            'symbol' => $this->getCurrencySymbol($currencyCode),
+            'show_symbol' => ShowSymbol::BEFORE,
+            'show_minus' => ShowMinus::BEFORE_SYMBOL,
+            'minus_sign' => self::MINUS_SIGN,
+        ];
+    }
+
     /**
      * @param array $scopeData
      * @return array
@@ -182,95 +214,82 @@ class Data extends AbstractData
      */
     public function getAllowedCurrenciesByScope($scopeData)
     {
-        if ($scopeData['type'] === ScopeInterface::SCOPE_WEBSITE) {
+        if ($scopeData['type'] === ScopeInterface::SCOPE_WEBSITES) {
             $codes = $this->getConfigValue(self::CURRENCY_WEBSITE, $scopeData['id'], ScopeInterface::SCOPE_WEBSITE);
             if ($codes !== null) {
                 return explode(',', $codes);
             }
         }
     
-        if ($scopeData['type'] === ScopeInterface::SCOPE_STORE) {
+        if ($scopeData['type'] === ScopeInterface::SCOPE_STORES) {
             return $this->storeManager->getStore($scopeData['id'])->getAvailableCurrencyCodes();
         }
     
         return $this->storeManager->getStore(0)->getAvailableCurrencyCodes();
     }
-    
+
     /**
-     * @param $code
-     * @param $scope
-     * @return mixed
+     * @param string $code
+     * @param array $scope
+     * @return array
      * @throws NoSuchEntityException
      */
     public function getSavedConfig($code, $scope)
     {
-        $defaultConfig = $this->getCurrencyConfigByScope($code, 'default', 0);
-    
-        if ($scope['type'] === ScopeInterface::SCOPE_WEBSITE) {
-            $websiteConfig = $this->getCurrencyConfigByScope($code, $scope['type'], $scope['id']);
-            
-            if (isset($websiteConfig['scope'])) {
-                $defaultConfig['use_default'] = 1;
-                return $defaultConfig;
+        if ($scope['type'] === ScopeInterface::SCOPE_STORES) {
+            $storeConfig = $this->_resourceConfig->getConfigByScope(
+                ScopeInterface::SCOPE_STORES,
+                (int) $scope['id']
+            );
+            if (isset($storeConfig[$code])) {
+                return $storeConfig[$code];
             }
-            
-            if (empty(array_diff($websiteConfig, $defaultConfig))) {
-                $defaultConfig['use_default'] = 1;
-                return $defaultConfig;
-            }
-            
-            return $websiteConfig;
-
-        }
-    
-        if ($scope['type'] === ScopeInterface::SCOPE_STORE) {
             $websiteId = $this->storeManager->getStore($scope['id'])->getWebsiteId();
-            $storeConfig = $this->getCurrencyConfigByScope($code, $scope['type'], $scope['id']);
-            $websiteConfig = $this->getCurrencyConfigByScope($code, ScopeInterface::SCOPE_WEBSITE, $websiteId);
-    
-            if (isset($storeConfig['scope'])) {
-                if (isset($websiteConfig['scope'])) {
-                    $defaultConfig['use_default'] = 1;
-                    return $defaultConfig;
-                }
-                $websiteConfig['use_default'] = 1;
-                return $websiteConfig;
-            }
-    
-            if (empty(array_diff($storeConfig, $websiteConfig))) {
-                $websiteConfig['use_default'] = 1;
-                return $websiteConfig;
-            }
-    
-            return $storeConfig;
+            $websiteByStoreConfig = $this->getSavedWebsiteConfig($code, $websiteId);
+            $websiteByStoreConfig['use_default'] = 1;
+
+            return $websiteByStoreConfig;
         }
 
-        return $this->getCurrencyConfigByScope($code, 'default', 0);
+        if ($scope['type'] === ScopeInterface::SCOPE_WEBSITES) {
+            return $this->getSavedWebsiteConfig($code, (int) $scope['id']);
+        }
+
+        return $this->getSavedDefaultConfig($code);
     }
-    
+
     /**
      * @param string $code
-     * @param string $scopeType
-     * @param mixed $scopeId
-     * @return mixed
+     * @return array
      */
-    public function getCurrencyConfigByScope($code, $scopeType, $scopeId)
+    public function getSavedDefaultConfig($code)
     {
-        $currencyConfig = self::jsonDecode($this->getConfigValue(
-            self::CONFIG_MODULE_PATH . '/general/currencies',
-            $scopeId,
-            $scopeType
-        ));
-        
-        if (!isset($currencyConfig[$code])) {
-            $currencyConfig[$code] = $this->getCurrencyDefaultConfig($code);
+        $config = $this->_resourceConfig->getConfigByScope(ScopeConfigInterface::SCOPE_TYPE_DEFAULT, 0);
+        if (!isset($config[$code])) {
+            return $this->getCurrencyDefaultConfig($code);
         }
-    
-        if (isset($currencyConfig[$code]['scope']) && $currencyConfig[$code]['scope']['type'] === 'default') {
-            $currencyConfig[$code] = $this->getCurrencyDefaultConfig($code);
+
+        return $config[$code];
+    }
+
+    /**
+     * @param string $code
+     * @param int $websiteId
+     * @return array
+     */
+    public function getSavedWebsiteConfig($code, $websiteId)
+    {
+        $config = $this->_resourceConfig->getConfigByScope(
+            ScopeInterface::SCOPE_WEBSITES,
+            $websiteId
+        );
+        if (isset($config[$code])) {
+            return $config[$code];
         }
-    
-        return $currencyConfig[$code];
+        $defaultConfig = $this->getSavedDefaultConfig($code);
+        $defaultConfig['use_default'] = 1;
+
+        return $defaultConfig;
     }
     
     /**
@@ -388,26 +407,5 @@ class Data extends AbstractData
         }
 
         return $content;
-    }
-    
-    /**
-     * @param $currencyCode
-     * @return array
-     */
-    public function getCurrencyDefaultConfig($currencyCode)
-    {
-        $currentLocale = $this->_localeResolver->getLocale();
-        $defaultConfig = $this->_defaultFormat->getFormat($currentLocale, $currencyCode);
-        
-        return [
-            'use_default' => 1,
-            'decimal_number' => $defaultConfig['requiredPrecision'],
-            'decimal_separator' => $defaultConfig['decimalSymbol'],
-            'group_separator' => $defaultConfig['groupSymbol'],
-            'symbol' => $this->getCurrencySymbol($currencyCode),
-            'show_symbol' => ShowSymbol::BEFORE,
-            'show_minus' => ShowMinus::BEFORE_SYMBOL,
-            'minus_sign' => self::MINUS_SIGN,
-        ];
     }
 }

@@ -27,6 +27,7 @@ use Mageplaza\CurrencyFormatter\Helper\Data as HelperData;
 use Magento\Framework\Locale\CurrencyInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Store\Model\ScopeInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 /**
  * Class Currencies
@@ -50,7 +51,7 @@ class Currencies extends AbstractFieldArray
      * @var CurrencyInterface
      */
     protected $_localeCurrency;
-    
+
     /**
      * Currencies constructor.
      * @param Context $context
@@ -88,7 +89,7 @@ class Currencies extends AbstractFieldArray
         $mpCurrencies = [];
         $scopeData = $this->getScopeData($this->getRequest()->getParams());
         $availableCurrencies = $this->_helperData->getAllowedCurrenciesByScope($scopeData);
-        
+
         foreach ($availableCurrencies as $code) {
             $mpCurrencies[$code]['code'] = $code;
             $mpCurrencies[$code]['name'] = $this->_localeCurrency->getCurrency($code)->getName();
@@ -97,10 +98,7 @@ class Currencies extends AbstractFieldArray
             $mpCurrencies[$code]['base'] = self::BASE_SELECT_NAME;
             
         }
-        
-//        \Zend_Debug::dump($mpCurrencies);
-//        die;
-        
+
         return HelperData::jsonEncode(array_values($mpCurrencies));
     }
 
@@ -122,7 +120,7 @@ class Currencies extends AbstractFieldArray
             return [
                 'id' => $params['website'],
                 'defaultTxt' => __('Use Default'),
-                'type' => ScopeInterface::SCOPE_WEBSITE
+                'type' => ScopeInterface::SCOPE_WEBSITES
             ];
         }
     
@@ -130,14 +128,14 @@ class Currencies extends AbstractFieldArray
             return [
                 'id' => $params['store'],
                 'defaultTxt' => __('Use Website'),
-                'type' => ScopeInterface::SCOPE_STORE
+                'type' => ScopeInterface::SCOPE_STORES
             ];
         }
     
         return [
             'id' => 0,
             'defaultTxt' => __('Use System'),
-            'type' => 'default',
+            'type' => ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
         ];
     }
 }

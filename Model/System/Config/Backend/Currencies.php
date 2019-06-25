@@ -40,14 +40,10 @@ class Currencies extends Value
         /** @var array $value */
         foreach ($value as $key => $saveConfig) {
             if (isset($saveConfig['use_default'])) {
-                $value[$key]['scope'] = [
-                    'id' => $this->getScopeId(),
-                    'type' => $this->getScope(),
-                ];
-                unset($value[$key]['use_default']);
+                unset($value[$key]);
             }
         }
-        
+
         if (is_array($value)) {
             $this->setValue(HelperData::jsonEncode($value));
         }
