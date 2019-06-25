@@ -197,76 +197,80 @@ class Data extends AbstractData
     }
     
     /**
-     * @param string $code
-     * @param array $scopeData
+     * @param $code
+     * @param $scope
      * @return mixed
      * @throws NoSuchEntityException
      */
-    public function getCurrencyConfigByScope($code, $scopeData)
+    public function getSavedConfig($code, $scope)
     {
-        if ($scopeData['type'] === ScopeInterface::SCOPE_WEBSITE) {
-            $default = self::jsonDecode($this->getConfigGeneral('currencies', 0));
+        $defaultConfig = $this->getCurrencyConfigByScope($code, 'default', 0);
     
-            $webSiteConfig = self::jsonDecode($this->getConfigValue(
-                self::CONFIG_MODULE_PATH . '/general/currencies',
-                $scopeData['id'],
-                ScopeInterface::SCOPE_WEBSITE
-            ));
+        if ($scope['type'] === ScopeInterface::SCOPE_WEBSITE) {
+            $websiteConfig = $this->getCurrencyConfigByScope($code, $scope['type'], $scope['id']);
             
-            if (!isset($webSiteConfig[$code])) {
-                $webSiteConfig[$code] = $this->getCurrencyDefaultConfig($code);
+            if (isset($websiteConfig['scope'])) {
+                $defaultConfig['use_default'] = 1;
+                return $defaultConfig;
             }
             
-            if (isset($default[$code]) && empty(array_diff($webSiteConfig[$code], $default[$code]))) {
-                $webSiteConfig[$code]['use_default'] = 1;
+            if (empty(array_diff($websiteConfig, $defaultConfig))) {
+                $defaultConfig['use_default'] = 1;
+                return $defaultConfig;
             }
             
-            return $webSiteConfig[$code];
+            return $websiteConfig;
+
         }
     
-        if ($scopeData['type'] === ScopeInterface::SCOPE_STORE) {
-            $websiteId = $this->storeManager->getStore($scopeData['id'])->getWebsiteId();
-            $defaultWebsite = self::jsonDecode($this->getConfigValue(
-                self::CONFIG_MODULE_PATH . '/general/currencies',
-                $websiteId,
-                ScopeInterface::SCOPE_WEBSITE
-            ));
-            
-            $storeConfig = self::jsonDecode($this->getConfigGeneral('currencies', $scopeData['id']));
+        if ($scope['type'] === ScopeInterface::SCOPE_STORE) {
+            $websiteId = $this->storeManager->getStore($scope['id'])->getWebsiteId();
+            $storeConfig = $this->getCurrencyConfigByScope($code, $scope['type'], $scope['id']);
+            $websiteConfig = $this->getCurrencyConfigByScope($code, ScopeInterface::SCOPE_WEBSITE, $websiteId);
     
-            if (!isset($storeConfig[$code])) {
-                $storeConfig[$code] = $this->getCurrencyDefaultConfig($code);
+            if (isset($storeConfig['scope'])) {
+                if (isset($websiteConfig['scope'])) {
+                    $defaultConfig['use_default'] = 1;
+                    return $defaultConfig;
+                }
+                $websiteConfig['use_default'] = 1;
+                return $websiteConfig;
             }
     
-            if (isset($defaultWebsite[$code]) && empty(array_diff($defaultWebsite[$code], $storeConfig[$code]))) {
-                $storeConfig[$code]['use_default'] = 1;
+            if (empty(array_diff($storeConfig, $websiteConfig))) {
+                $websiteConfig['use_default'] = 1;
+                return $websiteConfig;
             }
-            
-            return $storeConfig[$code];
+    
+            return $storeConfig;
         }
-        
-        return $this->getCurrencyConfig($code, 0);
+
+        return $this->getCurrencyConfigByScope($code, 'default', 0);
     }
     
     /**
-     * @param $currencyCode
-     * @return array
+     * @param string $code
+     * @param string $scopeType
+     * @param mixed $scopeId
+     * @return mixed
      */
-    public function getCurrencyDefaultConfig($currencyCode)
+    public function getCurrencyConfigByScope($code, $scopeType, $scopeId)
     {
-        $currentLocale = $this->_localeResolver->getLocale();
-        $defaultConfig = $this->_defaultFormat->getFormat($currentLocale, $currencyCode);
+        $currencyConfig = self::jsonDecode($this->getConfigValue(
+            self::CONFIG_MODULE_PATH . '/general/currencies',
+            $scopeId,
+            $scopeType
+        ));
         
-        return [
-            'use_default' => 1,
-            'decimal_number' => $defaultConfig['requiredPrecision'],
-            'decimal_separator' => $defaultConfig['decimalSymbol'],
-            'group_separator' => $defaultConfig['groupSymbol'],
-            'symbol' => $this->getCurrencySymbol($currencyCode),
-            'show_symbol' => ShowSymbol::BEFORE,
-            'show_minus' => ShowMinus::BEFORE_SYMBOL,
-            'minus_sign' => self::MINUS_SIGN,
-        ];
+        if (!isset($currencyConfig[$code])) {
+            $currencyConfig[$code] = $this->getCurrencyDefaultConfig($code);
+        }
+    
+        if (isset($currencyConfig[$code]['scope']) && $currencyConfig[$code]['scope']['type'] === 'default') {
+            $currencyConfig[$code] = $this->getCurrencyDefaultConfig($code);
+        }
+    
+        return $currencyConfig[$code];
     }
     
     /**
@@ -280,7 +284,7 @@ class Data extends AbstractData
         if (!isset($currencyConfig[$code])) {
             $currencyConfig[$code] = $this->getCurrencyDefaultConfig($code);
         }
-    
+        
         return $currencyConfig[$code];
     }
     
@@ -384,5 +388,26 @@ class Data extends AbstractData
         }
 
         return $content;
+    }
+    
+    /**
+     * @param $currencyCode
+     * @return array
+     */
+    public function getCurrencyDefaultConfig($currencyCode)
+    {
+        $currentLocale = $this->_localeResolver->getLocale();
+        $defaultConfig = $this->_defaultFormat->getFormat($currentLocale, $currencyCode);
+        
+        return [
+            'use_default' => 1,
+            'decimal_number' => $defaultConfig['requiredPrecision'],
+            'decimal_separator' => $defaultConfig['decimalSymbol'],
+            'group_separator' => $defaultConfig['groupSymbol'],
+            'symbol' => $this->getCurrencySymbol($currencyCode),
+            'show_symbol' => ShowSymbol::BEFORE,
+            'show_minus' => ShowMinus::BEFORE_SYMBOL,
+            'minus_sign' => self::MINUS_SIGN,
+        ];
     }
 }

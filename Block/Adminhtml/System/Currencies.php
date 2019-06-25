@@ -92,11 +92,15 @@ class Currencies extends AbstractFieldArray
         foreach ($availableCurrencies as $code) {
             $mpCurrencies[$code]['code'] = $code;
             $mpCurrencies[$code]['name'] = $this->_localeCurrency->getCurrency($code)->getName();
-            $mpCurrencies[$code]['config'] = $this->_helperData->getCurrencyConfigByScope($code, $scopeData);
+            $mpCurrencies[$code]['config'] = $this->_helperData->getSavedConfig($code, $scopeData);
             $mpCurrencies[$code]['default'] = $scopeData['defaultTxt'];
             $mpCurrencies[$code]['base'] = self::BASE_SELECT_NAME;
             
         }
+        
+//        \Zend_Debug::dump($mpCurrencies);
+//        die;
+        
         return HelperData::jsonEncode(array_values($mpCurrencies));
     }
 
@@ -133,7 +137,7 @@ class Currencies extends AbstractFieldArray
         return [
             'id' => 0,
             'defaultTxt' => __('Use System'),
-            'type' => null
+            'type' => 'default',
         ];
     }
 }
