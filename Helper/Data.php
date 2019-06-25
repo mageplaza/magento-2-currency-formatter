@@ -292,16 +292,13 @@ class Data extends AbstractData
         return $defaultConfig;
     }
     
-    /**
-     * @param string $code
-     * @param null $storeId
-     * @return mixed
-     */
+
     public function getCurrencyConfig($code, $storeId = null)
     {
         $currencyConfig = self::jsonDecode($this->getConfigGeneral('currencies', $storeId));
         if (!isset($currencyConfig[$code])) {
-            $currencyConfig[$code] = $this->getCurrencyDefaultConfig($code);
+            $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
+            return $this->getSavedWebsiteConfig($code, $websiteId);
         }
         
         return $currencyConfig[$code];

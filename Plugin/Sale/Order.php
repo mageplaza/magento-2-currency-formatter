@@ -31,6 +31,7 @@ use Magento\Framework\Exception\NoSuchEntityException;
  */
 class Order extends AbstractFormat
 {
+
     /**
      * @param SaleOrder $subject
      * @param callable $proceed
@@ -51,8 +52,8 @@ class Order extends AbstractFormat
         if (!$this->_helperData->isEnabled(0)) {
             return $proceed($price, $precision, $addBrackets);
         }
-        
-        $currency= $subject->getOrderCurrencyCode();
+
+        $currency = $subject->getOrderCurrencyCode();
         return $this->formatCurrencyText($currency, $price, $subject->getStoreId());
     }
 }
