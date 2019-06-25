@@ -245,7 +245,8 @@ class Data extends AbstractData
         $config = $this->getConfigValue(
             self::CONFIG_MODULE_PATH . '/general/currencies',
             $websiteId,
-            ScopeInterface::SCOPE_WEBSITES);
+            ScopeInterface::SCOPE_WEBSITES
+        );
         $currencyConfig = self::jsonDecode($config);
 
         if (!isset($currencyConfig[$code])) {
