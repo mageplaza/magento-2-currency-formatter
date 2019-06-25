@@ -162,7 +162,13 @@ class Data extends AbstractData
      */
     public function getCurrencySymbol($currency)
     {
-        return $this->_localeCurrency->getCurrency($currency)->getSymbol();
+        $symbol = $this->_localeCurrency->getCurrency($currency)->getSymbol();
+        if ($symbol === null) {
+            $symbolData = $this->_currencySymbol->getCurrencySymbolsData();
+            return $symbolData[$currency]['displaySymbol'];
+        }
+        
+        return $symbol;
     }
     
     /**
@@ -182,7 +188,7 @@ class Data extends AbstractData
      */
     public function getCurrenciesByWebsite($websiteId)
     {
-        $codes = $this->getConfigValue(self::CURRENCY_WEBSITE,$websiteId,ScopeInterface::SCOPE_WEBSITES);
+        $codes = $this->getConfigValue(self::CURRENCY_WEBSITE, $websiteId, ScopeInterface::SCOPE_WEBSITES);
         if ($codes !== null) {
             return explode(',', $codes);
         }
