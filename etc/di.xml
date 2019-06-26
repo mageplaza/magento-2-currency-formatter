@@ -36,8 +36,10 @@
     <type name='Magento\Sales\Ui\Component\Listing\Column\PurchasedPrice'>
         <plugin name='mp-currency-formatter-sale-order-grid' type='Mageplaza\CurrencyFormatter\Plugin\Sale\Component\PurchasedPrice'/>
     </type>
-    <!--<type name='Magento\Backend\Block\Widget\Grid\Column\Renderer\Price'>-->
-        <!--<plugin name='mp-currency-formatter-sale-order-search-grid' type='Mageplaza\CurrencyFormatter\Plugin\Sale\Order\Search\Price'/>-->
-    <!--</type>-->
-
+    <type name='Magento\Backend\Block\Widget\Grid\Column\Renderer\Currency'>
+        <plugin name='mp-currency-formatter-sale-order-search-grid' type='Mageplaza\CurrencyFormatter\Plugin\Widget\Currency'/>
+    </type>
+    <type name='Magento\Backend\Block\Widget\Grid\Column\Renderer\Price'>
+        <plugin name='mp-currency-formatter-sale-order-search-grid' type='Mageplaza\CurrencyFormatter\Plugin\Widget\Price'/>
+    </type>
 </config>

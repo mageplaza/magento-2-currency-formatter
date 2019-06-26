@@ -21,6 +21,8 @@
 
 namespace Mageplaza\CurrencyFormatter\Plugin\Sale\Component;
 
+use Magento\Directory\Model\Currency\DefaultLocator;
+use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Locale\CurrencyInterface;
 use Magento\Framework\Locale\FormatInterface;
 use Magento\Framework\Locale\ResolverInterface;
@@ -50,6 +52,8 @@ class PurchasedPrice extends AbstractFormat
      * @param CurrencyInterface $localeCurrency
      * @param FormatInterface $localeFormat
      * @param DefaultFormat $defaultFormat
+     * @param DefaultLocator $currencyLocator
+     * @param RequestInterface $request
      * @param OrderFactory $orderFactory
      */
     public function __construct(
@@ -59,17 +63,21 @@ class PurchasedPrice extends AbstractFormat
         CurrencyInterface $localeCurrency,
         FormatInterface $localeFormat,
         DefaultFormat $defaultFormat,
+        DefaultLocator $currencyLocator,
+        RequestInterface $request,
         OrderFactory $orderFactory
     ) {
         $this->_orderFactory = $orderFactory;
-        
+    
         parent::__construct(
             $storeManager,
             $helperData,
             $localeResolver,
             $localeCurrency,
             $localeFormat,
-            $defaultFormat
+            $defaultFormat,
+            $currencyLocator,
+            $request
         );
     }
     

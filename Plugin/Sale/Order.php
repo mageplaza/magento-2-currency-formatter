@@ -31,7 +31,6 @@ use Magento\Framework\Exception\NoSuchEntityException;
  */
 class Order extends AbstractFormat
 {
-
     /**
      * @param SaleOrder $subject
      * @param callable $proceed
