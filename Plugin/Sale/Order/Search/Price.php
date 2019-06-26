@@ -63,7 +63,14 @@ class Price extends AbstractFormat
         BlockPrice $blockPrice
     ) {
         $this->_blockPrice = $blockPrice;
-        parent::__construct($storeManager, $helperData, $localeResolver, $localeCurrency, $localeFormat, $defaultFormat);
+        parent::__construct(
+            $storeManager,
+            $helperData,
+            $localeResolver,
+            $localeCurrency,
+            $localeFormat,
+            $defaultFormat
+        );
     }
 
     /**
@@ -79,7 +86,7 @@ class Price extends AbstractFormat
         if (!$this->_helperData->isEnabled(0)) {
             return $proceed($row);
         }
-        \Magento\Framework\App\ObjectManager::getInstance()->get('Psr\Log\LoggerInterface')->critical('$customerOrderNumber: ');
+        
         if ($data = $this->_blockPrice->getValue($row)) {
             $currencyCode = $this->_blockPrice->getCurrencyCode($row);
 

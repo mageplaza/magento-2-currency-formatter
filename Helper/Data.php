@@ -38,7 +38,7 @@ use Magento\Directory\Model\CurrencyFactory;
 use Magento\CurrencySymbol\Model\System\Currencysymbol;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Mageplaza\CurrencyFormatter\Model\Resource\Configuration as ResourceConfiguration;
+use Mageplaza\CurrencyFormatter\Model\Core\Configuration as ResourceConfiguration;
 
 /**
  * Class Data

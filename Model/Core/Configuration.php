@@ -19,7 +19,7 @@
  * @license     https://www.mageplaza.com/LICENSE.txt
  */
 
-namespace Mageplaza\CurrencyFormatter\Model\Resource;
+namespace Mageplaza\CurrencyFormatter\Model\Core;
 
 use Magento\Framework\App\ResourceConnection;
 use Mageplaza\CurrencyFormatter\Helper\Data as HelperData;
@@ -34,9 +34,12 @@ class Configuration
      * @var ResourceConnection
      */
     protected $_resource;
-
-    public function __construct
-    (
+    
+    /**
+     * Configuration constructor.
+     * @param ResourceConnection $resource
+     */
+    public function __construct(
         ResourceConnection $resource
     ) {
         $this->_resource = $resource;
@@ -55,7 +58,7 @@ class Configuration
      */
     public function getConfigTable()
     {
-        return $this->getConnection()->getTableName('core_config_data');
+        return $this->_resource->getTableName('core_config_data');
     }
 
     /**
