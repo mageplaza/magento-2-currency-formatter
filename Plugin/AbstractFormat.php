@@ -176,7 +176,7 @@ abstract class AbstractFormat
         $options['display'] = Zend_Currency::NO_SYMBOL;
         $firstResult = $this->_localeCurrency->getCurrency($currency)->toCurrency($price, $options);
         $finalResult = $this->_helperData->getDirectoryCurrency($firstResult, $decimal, $original, $config);
-    
+        
         return $finalResult;
     }
     

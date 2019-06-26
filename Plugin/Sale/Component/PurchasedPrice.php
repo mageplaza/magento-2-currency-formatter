@@ -21,6 +21,7 @@
 
 namespace Mageplaza\CurrencyFormatter\Plugin\Sale\Component;
 
+use function GuzzleHttp\Psr7\_parse_request_uri;
 use Magento\Directory\Model\Currency\DefaultLocator;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Locale\CurrencyInterface;
@@ -32,6 +33,7 @@ use Mageplaza\CurrencyFormatter\Helper\Data as HelperData;
 use Mageplaza\CurrencyFormatter\Model\Locale\DefaultFormat;
 use Mageplaza\CurrencyFormatter\Plugin\AbstractFormat;
 use Magento\Sales\Model\OrderFactory;
+use Test\Helper;
 
 /**
  * Class Price
@@ -93,22 +95,29 @@ class PurchasedPrice extends AbstractFormat
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as & $item) {
-                $order = $this->_orderFactory->create()->load($item['entity_id']);
-                $storeId = $order->getStoreId();
-                
-                if (!$this->_helperData->isEnabled($storeId)) {
-                    return $proceed($dataSource);
+                $storeId = 0;
+                $action = $this->_request->getFullActionName();
+                if ($action === 'sales_order_index' || $action === 'mui_index_render') {
+                    $order = $this->_orderFactory->create()->load($item['entity_id']);
+                    $storeId = $order->getStoreId();
                 }
-
+                if ($action === 'sales_invoice_index') {
+                    $storeId = $item['store_id'];
+                }
+                
                 $currencyCode = isset($item['order_currency_code'])
                     ? $item['order_currency_code']
                     : $item['base_currency_code'];
                 $itemName = $subject->getData('name');
-
-                $item[$itemName] = $this->formatCurrencyText($currencyCode, $item[$itemName], $storeId);
+                $value = $item[$itemName];
+                
+                $item[$itemName] = $this->_localeCurrency->getCurrency($currencyCode)->toCurrency($value);
+                if ($this->_helperData->isEnabled($storeId)) {
+                    $item[$itemName] = $this->formatCurrencyText($currencyCode, $value, $storeId);
+                }
             }
         }
-    
+        
         return $dataSource;
     }
 }

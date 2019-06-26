@@ -48,7 +48,7 @@ class Order extends AbstractFormat
         $precision,
         $addBrackets = false
     ) {
-        if (!$this->_helperData->isEnabled(0)) {
+        if (!$this->_helperData->isEnabled($subject->getStoreId())) {
             return $proceed($price, $precision, $addBrackets);
         }
 
