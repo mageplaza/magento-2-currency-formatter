@@ -95,25 +95,21 @@ class PurchasedPrice extends AbstractFormat
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as & $item) {
-                $storeId = 0;
                 $action = $this->_request->getFullActionName();
-                if ($action === 'sales_order_index' || $action === 'mui_index_render') {
-                    $order = $this->_orderFactory->create()->load($item['entity_id']);
+                if ($action === 'mui_index_render') {
+                    $orderId = isset($item['order_id']) ? $item['order_id'] : $item['entity_id'];
+                    $order = $this->_orderFactory->create()->load($orderId);
                     $storeId = $order->getStoreId();
-                }
-                if ($action === 'sales_invoice_index') {
-                    $storeId = $item['store_id'];
-                }
-                
-                $currencyCode = isset($item['order_currency_code'])
-                    ? $item['order_currency_code']
-                    : $item['base_currency_code'];
-                $itemName = $subject->getData('name');
-                $value = $item[$itemName];
-                
-                $item[$itemName] = $this->_localeCurrency->getCurrency($currencyCode)->toCurrency($value);
-                if ($this->_helperData->isEnabled($storeId)) {
-                    $item[$itemName] = $this->formatCurrencyText($currencyCode, $value, $storeId);
+    
+                    $currencyCode = isset($item['order_currency_code'])
+                        ? $item['order_currency_code']
+                        : $item['base_currency_code'];
+                    $itemName = $subject->getData('name');
+                    $value = $item[$itemName];
+                    $item[$itemName] = $this->_localeCurrency->getCurrency($currencyCode)->toCurrency($value);
+                    if ($this->_helperData->isEnabled($storeId)) {
+                        $item[$itemName] = $this->formatCurrencyText($currencyCode, $value, $storeId);
+                    }
                 }
             }
         }
