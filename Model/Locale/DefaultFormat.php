@@ -30,8 +30,8 @@ class DefaultFormat
     const CONTENT = '%s';
 
     /**
-     * @param $localeCode
-     * @param $currencyCode
+     * @param string $localeCode
+     * @param string $currencyCode
      * @return array
      */
     public function getFormat($localeCode, $currencyCode)

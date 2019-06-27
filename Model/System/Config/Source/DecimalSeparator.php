@@ -27,7 +27,6 @@ namespace Mageplaza\CurrencyFormatter\Model\System\Config\Source;
  */
 class DecimalSeparator extends OptionArray
 {
-    
     /**
      * @return array
      */

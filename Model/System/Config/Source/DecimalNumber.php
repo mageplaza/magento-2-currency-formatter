@@ -27,7 +27,6 @@ namespace Mageplaza\CurrencyFormatter\Model\System\Config\Source;
  */
 class DecimalNumber extends OptionArray
 {
-    
     /**
      * @return array
      */

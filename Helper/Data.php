@@ -292,7 +292,12 @@ class Data extends AbstractData
         return $defaultConfig;
     }
     
-
+    /**
+     * @param string $code
+     * @param null $storeId
+     * @return array
+     * @throws NoSuchEntityException
+     */
     public function getCurrencyConfig($code, $storeId = null)
     {
         $currencyConfig = self::jsonDecode($this->getConfigGeneral('currencies', $storeId));

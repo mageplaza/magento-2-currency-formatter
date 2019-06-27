@@ -41,32 +41,35 @@ define([
                 newPattern = null,
                 newPrice = null;
             
+            if (price > 0) {
+                return this._super(price);
+            }
+            
             if (price < 0 && format.showMinus && format.minusSign && format.symbol) {
-                newPrice = price * (-1);
+                newPrice = price * -1;
+                switch (format.showMinus) {
+                    case 'before_value':
+                        newPattern = format.pattern.replace(content, format.minusSign + content);
+                        break;
+                    case 'after_value':
+                        newPattern = format.pattern.replace(content, content + format.minusSign);
+                        break;
+                    case 'before_symbol':
+                        newPattern = format.pattern.replace(format.symbol, format.minusSign + format.symbol);
+                        break;
+                    case 'after_symbol':
+                        newPattern = format.pattern.replace(format.symbol, format.symbol + format.minusSign);
+                        break;
+                    default:
+                        newPattern = format.pattern;
+                        break;
+                }
                 
                 if (format.pattern.indexOf(format.symbol) === -1) {
                     newPattern = format.minusSign + format.pattern;
-                }else {
-                    switch (format.showMinus) {
-                        case 'before_value':
-                            newPattern = format.pattern.replace(content, format.minusSign + content);
-                            break;
-                        case 'after_value':
-                            newPattern = format.pattern.replace(content, content + format.minusSign);
-                            break;
-                        case 'before_symbol':
-                            newPattern = format.pattern.replace(format.symbol, format.minusSign + format.symbol);
-                            break;
-                        case 'after_symbol':
-                            newPattern = format.pattern.replace(format.symbol, format.symbol + format.minusSign);
-                            break;
-                        default:
-                            newPattern = format.pattern;
-                            break;
-                    }
                 }
                 
-                $.each(newFormat, function (key, value) {
+                $.each(newFormat, function (key) {
                     if (key === 'pattern') {
                         newFormat['pattern'] = newPattern;
                     }else {
@@ -75,8 +78,6 @@ define([
                 });
                 
                 return priceUtils.formatPrice(newPrice, newFormat);
-            }else {
-                return this._super(price);
             }
         },
     };

@@ -21,7 +21,6 @@
 
 namespace Mageplaza\CurrencyFormatter\Plugin\Sale\Component;
 
-use function GuzzleHttp\Psr7\_parse_request_uri;
 use Magento\Directory\Model\Currency\DefaultLocator;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Locale\CurrencyInterface;
@@ -33,7 +32,6 @@ use Mageplaza\CurrencyFormatter\Helper\Data as HelperData;
 use Mageplaza\CurrencyFormatter\Model\Locale\DefaultFormat;
 use Mageplaza\CurrencyFormatter\Plugin\AbstractFormat;
 use Magento\Sales\Model\OrderFactory;
-use Test\Helper;
 
 /**
  * Class Price
