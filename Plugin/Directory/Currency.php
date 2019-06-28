@@ -45,7 +45,7 @@ class Currency extends AbstractFormat
         if (!$this->_helperData->isEnabled()) {
             return $proceed($price, $options);
         }
-        $this->_helperData->isAdmin() ? $storeId = 0 : $storeId = null;
+        $storeId = $this->_helperData->isAdmin() ? 0 : null;
         $currency= $subject->getCurrencyCode();
 
         return $this->formatCurrencyText($currency, $price, $storeId);

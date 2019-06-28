@@ -94,6 +94,10 @@ class PurchasedPrice extends AbstractFormat
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as & $item) {
                 $action = $this->_request->getFullActionName();
+                /**
+                 * Format currency only when the last action of grid rendering is called
+                 * Last action name is 'mui_index_render'
+                 */
                 if ($action === 'mui_index_render') {
                     $orderId = isset($item['order_id']) ? $item['order_id'] : $item['entity_id'];
                     $order = $this->_orderFactory->create()->load($orderId);

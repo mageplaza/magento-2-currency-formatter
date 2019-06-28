@@ -25,6 +25,7 @@ use Magento\Framework\App\ResourceConnection;
 use Mageplaza\CurrencyFormatter\Helper\Data as HelperData;
 
 /**
+ * Get configuration specifically by Scope and Scope Value
  * Class Configuration
  * @package Mageplaza\CurrencyFormatter\Model\Resource
  */
