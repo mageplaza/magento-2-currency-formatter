@@ -25,7 +25,7 @@ use Magento\Framework\Option\ArrayInterface;
 
 /**
  * Class OptionArray
- * @package Mageplaza\Barcode\Model\System\Config\Source
+ * @package Mageplaza\CurrencyFormatter\Model\System\Config\Source
  */
 abstract class OptionArray implements ArrayInterface
 {
