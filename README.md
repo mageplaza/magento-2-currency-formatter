@@ -48,7 +48,7 @@ php bin/magento setup:static-content:deploy
 
 ### Improve all available currencies at store sites
 
-![Imgur](https://i.imgur.com/w2thhyU.png)
+![Improve all available currencies at store sites](https://i.imgur.com/w2thhyU.png)
 
 Currency Formatter extension improves performance of all available currencies are used at the store site. All prices with at any currencies will be displayed more clearly to customers and in a friendly way for the currency standards of each nation in the world.   
 
@@ -56,7 +56,7 @@ Currency Formatter extension improves performance of all available currencies ar
 
 Currency Formatter allows assigning any symbols for the price currencies at store. Store owners can flexibly use signs or abbreviations as currency symbols, for example, $ or USD for the US dollar. 
 
-![Imgur](https://i.imgur.com/YJoW7Y4.png)
+![Specify and place symbol of currency](https://i.imgur.com/YJoW7Y4.png)
 
 More importantly, there are 5 positions for currency symbol correlated with price value including: 
 
@@ -69,7 +69,7 @@ More importantly, there are 5 positions for currency symbol correlated with pric
 
 ### Easy to modify the thousands separator
 
-![Imgur](https://i.imgur.com/VYUJTYH.png)
+![Easy to modify the thousands separator](https://i.imgur.com/VYUJTYH.png)
 
 To make the price value more clear, using the thousands separator is necessary to separate the thousands groups. Depending on the custom of each nation, the sign of separator differs. Likewise, while the U.K. and U.S. use a comma to separate groups of thousands, many other countries use a dot instead, and some countries separate thousands groups with a thin space. 
 
@@ -84,19 +84,19 @@ Understanding this difference, Currency Formatter offers 4 types of separators t
 
 A decimal separator is a symbol used to separate the integer part from the fractional part of a number written in decimal form. Different countries officially designate different symbols for the decimal separator. With Currency Formatter, the sign of decimal can be set as a comma or a dot flexibly to match with the number standard in each nation.
 
-![Imgur](https://i.imgur.com/8lF2q3N.png)
+![ Define sign and digit for decimal separator ](https://i.imgur.com/8lF2q3N.png)
 
 Besides. the number of decimals can be set up easily at the admin backend. Store owners can display the accuracy levels of price value by adding specific decimal numbers after the integer part. For example, $15.1 for decimal number as 1, $15.11 for decimal number as 2
 
 ### Multi-positions of the minus sign
 
-![Imgur](https://i.imgur.com/gAGANQj.png)
+![Multi-positions of the minus sign](https://i.imgur.com/gAGANQj.png)
 
 In case you would like to display the discount, the minus sign is used. With Currency Formatter offers various options for the position of the minus sign. At the admin backend, you can place the minus sign flexibly: 
-Before Value
-After Value
-Before Symbol
-After Symbol
+- Before Value
+- After Value
+- Before Symbol
+- After Symbol
 
 
 ## 5. More Features 
