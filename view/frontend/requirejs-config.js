@@ -1,10 +1,9 @@
-<?php
 /**
  * Mageplaza
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Mageplaza.com license that is
+ * This source file is subject to the mageplaza.com license that is
  * available through the world-wide-web at this URL:
  * https://www.mageplaza.com/LICENSE.txt
  *
@@ -18,11 +17,12 @@
  * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
  * @license     https://www.mageplaza.com/LICENSE.txt
  */
-
-use Magento\Framework\Component\ComponentRegistrar;
-
-ComponentRegistrar::register(
-    ComponentRegistrar::MODULE,
-    'Mageplaza_CurrencyFormatter',
-    __DIR__
-);
+var config = {
+    config: {
+        mixins: {
+            'Magento_Checkout/js/view/summary/abstract-total': {
+                'Mageplaza_CurrencyFormatter/js/view/summary/abstract-total': true
+            }
+        }
+    }
+};

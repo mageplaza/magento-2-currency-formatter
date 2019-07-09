@@ -1,0 +1,72 @@
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_CurrencyFormatter
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
+
+#mpcurrencyformatter_general colgroup.label,#mpcurrencyformatter_general td.label {
+    width : 20% !important;
+}
+
+#mpcurrencyformatter_general td.value {
+    padding : 2.2rem 1.5rem 0 0 !important;
+}
+
+#mp-grid-currencies-config table th {
+    text-align: center;
+    background-color: #cccccc !important;
+}
+
+.mp-currency-data td, .mp-currency-header td {
+    padding-top: 1rem !important;
+    padding-right: 2.5rem !important;
+    padding-bottom: 1rem !important;
+}
+
+.mp-currency-data td {
+    background-color: #f2f2f2 !important;
+}
+
+.mp-currency-header td {
+    background-color: #e6e6e6 !important;
+}
+
+.mp-currency-name {
+    font-weight: bold;
+}
+
+.mpcurrencyformatter-currency {
+    width: 15%;
+}
+.mpcurrencyformatter-symbol {
+    width: 23%;
+}
+.mpcurrencyformatter-group {
+    width: 15%;
+}
+.mpcurrencyformatter-decimal {
+    width: 15%;
+}
+.mpcurrencyformatter-minus {
+    width: 17%;
+}
+.mpcurrencyformatter-preview {
+    width: 15%;
+}
+.mp-currency-data .preview-section {
+    text-align: center;
+}

@@ -1,0 +1,181 @@
+<!--
+/**
+* Mageplaza
+*
+* NOTICE OF LICENSE
+*
+* This source file is subject to the mageplaza.com license that is
+* available through the world-wide-web at this URL:
+* https://www.mageplaza.com/LICENSE.txt
+*
+* DISCLAIMER
+*
+* Do not edit or add to this file if you wish to upgrade this extension to newer
+* version in the future.
+*
+* @category    Mageplaza
+* @package     Mageplaza_CurrencyFormatter
+* @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+* @license     https://www.mageplaza.com/LICENSE.txt
+*/
+ -->
+<div class="design_theme_ua_regexp" id="mp-grid-currencies-config">
+    <div class="admin__control-table-wrapper">
+        <table class="admin__control-table">
+            <colgroup class="mpcurrencyformatter-currency"></colgroup>
+            <colgroup class="mpcurrencyformatter-symbol"></colgroup>
+            <colgroup class="mpcurrencyformatter-group"></colgroup>
+            <colgroup class="mpcurrencyformatter-decimal"></colgroup>
+            <colgroup class="mpcurrencyformatter-minus"></colgroup>
+            <colgroup class="mpcurrencyformatter-preview"></colgroup>
+            <thead>
+                <tr>
+                    <th class="col-currencies"><span data-bind="i18n: 'Currencies'"></span></th>
+                    <th class="col-template" colspan="4"><span data-bind="i18n: 'Template'"></span></th>
+                    <th class="col-preview"><span data-bind="i18n: 'Preview'"></span></th>
+                </tr>
+            </thead>
+            <tbody data-role="options-container" data-bind="foreach: {data: mpCurrencies, as: 'currency'}">
+                <tr class="mp-currency-header" >
+                    <td><strong data-bind="text: currency.name"></strong></td>
+                    <td>
+                        <label data-bind="attr: {for: 'mpcurrencyformatter_show_symbol_' + currency.code}">
+                            <span data-bind="i18n: 'Symbol Position'"></span>
+                        </label>
+                    </td>
+                    <td>
+                        <label data-bind="attr: {for: 'mpcurrencyformatter_group_separator_' + currency.code}">
+                            <span data-bind="i18n: 'Thousands Separator'"></span>
+                        </label>
+                    </td>
+                    <td>
+                        <label data-bind="attr: {for: 'mpcurrencyformatter_decimal_number_' + currency.code}">
+                            <span data-bind="i18n: 'Decimal Digit(s)'"></span>
+                        </label>
+                    </td>
+                    <td>
+                        <label data-bind="attr: {for: 'mpcurrencyformatter_minus_sign_' + currency.code}">
+                            <span data-bind="i18n: 'Minus Sign'"></span>
+                        </label>
+                    </td>
+                    <td></td>
+                </tr>
+                    <tr class="mp-currency-data">
+                    <td>
+                        <input data-bind="
+                                attr: {name: currency.base + '[' + currency.code + ']' + '['+ 'use_default' + ']',
+                                        id: 'mpcurrencyformatter_use_default_' + currency.code},
+                                value: currency.config.use_default,
+                                valueUpdate: 'keyup',
+                                checked: currency.config.use_default === 1,
+                                event: { change: function(data, event) {$parent.useDefault(data, $parent)}}"
+                               type="checkbox"
+                               class="checkbox"
+                               onchange="this.value = this.checked ? 1: 0">
+                        <label data-bind="attr: {for: 'mpcurrencyformatter_use_default_' + currency.code}" class="inherit">
+                            <span data-bind="text: currency.default"></span>
+                        </label>
+                    </td>
+                    <td>
+                        <select data-bind="
+                                attr: {name: currency.base + '[' + currency.code + ']' + '['+ 'show_symbol' + ']',
+                                        id: 'mpcurrencyformatter_show_symbol_' + currency.code},
+                                value: currency.config.show_symbol,
+                                options: $parent.mpFormat.show_symbol,
+                                optionsText: 'label',
+                                optionsValue: 'value',
+                                event: { change: function(data, event) {$parent.createPreview(data, $parent)}}">
+                        </select>
+                    </td>
+                    <td>
+                        <select data-bind="
+                                attr: {name: currency.base + '[' + currency.code + ']' + '['+ 'group_separator' + ']',
+                                        id: 'mpcurrencyformatter_group_separator_' + currency.code},
+                                value: currency.config.group_separator,
+                                options: $parent.mpFormat.group_separator,
+                                optionsText: 'label',
+                                optionsValue: 'value',
+                                event: { change: function(data, event) {$parent.createPreview(data, $parent)}}">
+                        </select>
+                    </td>
+                    <td>
+                        <select data-bind="
+                                attr: {name: currency.base + '[' + currency.code + ']' + '['+ 'decimal_number' + ']',
+                                        id: 'mpcurrencyformatter_decimal_number_' + currency.code},
+                                value: currency.config.decimal_number,
+                                options: $parent.mpFormat.decimal_number,
+                                optionsText: 'label',
+                                optionsValue: 'value',
+                                event: { change: function(data, event) {$parent.createPreview(data, $parent)}}">
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" data-bind="
+                                attr: {name: currency.base + '[' + currency.code + ']' + '['+ 'minus_sign' + ']',
+                                        id: 'mpcurrencyformatter_minus_sign_' + currency.code},
+                                value: currency.config.minus_sign,
+                                valueUpdate: 'keyup',
+                                event: { keyup: function(data, event) {$parent.createPreview(data, $parent)}}">
+                    </td>
+                    <td></td>
+                </tr>
+                <tr class="mp-currency-data">
+                    <td></td>
+                    <td>
+                        <label data-bind="attr: {for: 'mpcurrencyformatter_symbol_' + currency.code}">
+                            <span data-bind="i18n: 'Symbol'"></span>
+                        </label>
+                    </td>
+                    <td></td>
+                    <td>
+                        <label data-bind="attr: {for: 'mpcurrencyformatter_decimal_separator_' + currency.code}">
+                            <span data-bind="i18n: 'Decimal Separator'"></span>
+                        </label>
+                    </td>
+                    <td>
+                        <label data-bind="attr: {for: 'mpcurrencyformatter_show_minus_' + currency.code}">
+                            <span data-bind="i18n: 'Minus Sign Position'"></span>
+                        </label>
+                    </td>
+                    <td class="preview-section">
+                        <span data-bind="attr: {id: 'demo_' + currency.code}"></span>
+                    </td>
+                </tr>
+                <tr class="mp-currency-data">
+                    <td></td>
+                    <td>
+                        <input type="text" data-bind="
+                                attr: {name: currency.base + '[' + currency.code + ']' + '['+ 'symbol' + ']',
+                                        id: 'mpcurrencyformatter_symbol_' + currency.code},
+                                value: currency.config.symbol,
+                                valueUpdate: 'keyup',
+                                event: { keyup: function(data, event) {$parent.createPreview(data, $parent)}}">
+                    </td>
+                    <td></td>
+                    <td>
+                        <select data-bind="
+                                attr: {name: currency.base + '[' + currency.code + ']' + '['+ 'decimal_separator' + ']',
+                                        id: 'mpcurrencyformatter_decimal_separator_' + currency.code},
+                                value: currency.config.decimal_separator,
+                                options: $parent.mpFormat.decimal_separator,
+                                optionsText: 'label',
+                                optionsValue: 'value',
+                                event: { change: function(data, event) {$parent.createPreview(data, $parent)}}">
+                        </select>
+                    </td>
+                    <td>
+                        <select data-bind="attr: {name: currency.base + '[' + currency.code + ']' + '['+ 'show_minus' + ']',
+                                        id: 'mpcurrencyformatter_show_minus_' + currency.code},
+                                value: currency.config.show_minus,
+                                options: $parent.mpFormat.show_minus,
+                                optionsText: 'label',
+                                optionsValue: 'value',
+                                event: { change: function(data, event) {$parent.createPreview(data, $parent)}}">
+                        </select>
+                    </td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

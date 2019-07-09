@@ -1,0 +1,30 @@
+Currencies,Currencies
+Template,Template
+Preview,Preview
+"Use Default","Use Default"
+"Use Website","Use Website"
+"Use System","Use System"
+"Comma (,)","Comma (,)"
+"Dot (.)","Dot (.)"
+"Space ( )","Space ( )"
+None,None
+"Before Value","Before Value"
+"After Value","After Value"
+"Before Symbol","Before Symbol"
+"After Symbol","After Symbol"
+"Before value","Before value"
+"Before value with space","Before value with space"
+"After value","After value"
+"After value with space","After value with space"
+"Symbol Position","Symbol Position"
+"Thousands Separator","Thousands Separator"
+"Decimal Digit(s)","Decimal Digit(s)"
+"Minus Sign","Minus Sign"
+Symbol,Symbol
+"Decimal Separator","Decimal Separator"
+"Minus Sign Position","Minus Sign Position"
+"Currency Formatter","Currency Formatter"
+General,General
+Enable,Enable
+"Select <strong>Yes</strong> to enable this module","Select <strong>Yes</strong> to enable this module"
+"Currency Configuration","Currency Configuration"
