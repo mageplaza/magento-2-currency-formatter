@@ -22,6 +22,7 @@
 namespace Mageplaza\CurrencyFormatter\Model\Core;
 
 use Magento\Framework\App\ResourceConnection;
+use Magento\Framework\DB\Adapter\AdapterInterface;
 use Mageplaza\CurrencyFormatter\Helper\Data as HelperData;
 
 /**
@@ -35,19 +36,19 @@ class Configuration
      * @var ResourceConnection
      */
     protected $_resource;
-    
+
     /**
      * Configuration constructor.
+     *
      * @param ResourceConnection $resource
      */
-    public function __construct(
-        ResourceConnection $resource
-    ) {
+    public function __construct(ResourceConnection $resource)
+    {
         $this->_resource = $resource;
     }
 
     /**
-     * @return \Magento\Framework\DB\Adapter\AdapterInterface
+     * @return AdapterInterface
      */
     public function getConnection()
     {
@@ -65,6 +66,7 @@ class Configuration
     /**
      * @param string $scope
      * @param int $scopeId
+     *
      * @return array
      */
     public function getConfigByScope($scope, $scopeId)

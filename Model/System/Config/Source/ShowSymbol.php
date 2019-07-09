@@ -32,7 +32,7 @@ class ShowSymbol extends OptionArray
     const AFTER             = 'after';
     const AFTER_WITH_SPACE  = 'after_with_space';
     const NONE              = 'none';
-    
+
     /**
      * @return array
      */

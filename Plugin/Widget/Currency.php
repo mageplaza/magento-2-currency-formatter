@@ -22,9 +22,10 @@
 namespace Mageplaza\CurrencyFormatter\Plugin\Widget;
 
 use Magento\Backend\Block\Widget\Grid\Column\Renderer\Currency as WidgetCurrency;
-use Mageplaza\CurrencyFormatter\Plugin\AbstractFormat;
 use Magento\Framework\DataObject;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Mageplaza\CurrencyFormatter\Plugin\AbstractFormat;
+use Zend_Currency_Exception;
 
 /**
  * Class Currency
@@ -36,9 +37,10 @@ class Currency extends AbstractFormat
      * @param WidgetCurrency $subject
      * @param callable $proceed
      * @param DataObject $row
+     *
      * @return string
      * @throws NoSuchEntityException
-     * @throws \Zend_Currency_Exception
+     * @throws Zend_Currency_Exception
      */
     public function aroundRender(WidgetCurrency $subject, callable $proceed, DataObject $row)
     {
@@ -46,15 +48,17 @@ class Currency extends AbstractFormat
         if (!$this->_helperData->isEnabled($storeId)) {
             return $proceed($row);
         }
-        
+
         if ($data = $this->getSubjectValue($subject, $row)) {
             $currency_code = $this->getSubjectCurrencyCode($subject, $row);
-            $data = (float)$data * $this->getSubjectRate($subject, $row);
-            $sign = (bool)(int)$subject->getColumn()->getShowNumberSign() && $data > 0 ? '+' : '';
+            $data = (float) $data * $this->getSubjectRate($subject, $row);
+            $sign = (bool) (int) $subject->getColumn()->getShowNumberSign() && $data > 0 ? '+' : '';
             $data = sprintf('%f', $data);
             $data = $this->formatCurrencyText($currency_code, $data, $storeId);
+
             return $sign . $data;
         }
+
         return $subject->getColumn()->getDefault();
     }
 }

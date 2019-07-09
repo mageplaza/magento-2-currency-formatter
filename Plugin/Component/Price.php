@@ -22,8 +22,10 @@
 namespace Mageplaza\CurrencyFormatter\Plugin\Component;
 
 use Magento\Catalog\Ui\Component\Listing\Columns\Price as ComponentPrice;
-use Mageplaza\CurrencyFormatter\Plugin\AbstractFormat;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Store\Model\Store;
+use Mageplaza\CurrencyFormatter\Plugin\AbstractFormat;
+use Zend_Currency_Exception;
 
 /**
  * Class Price
@@ -35,16 +37,17 @@ class Price extends AbstractFormat
      * @param ComponentPrice $subject
      * @param callable $proceed
      * @param array $dataSource
+     *
      * @return array
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     * @throws \Zend_Currency_Exception
+     * @throws NoSuchEntityException
+     * @throws Zend_Currency_Exception
      */
     public function aroundPrepareDataSource(ComponentPrice $subject, callable $proceed, array $dataSource)
     {
         if (!$this->_helperData->isEnabled(0)) {
             return $proceed($dataSource);
         }
-    
+
         if (isset($dataSource['data']['items'])) {
             $store = $this->_storeManager->getStore(Store::DEFAULT_STORE_ID);
             $currency = $store->getBaseCurrencyCode();
@@ -60,7 +63,7 @@ class Price extends AbstractFormat
                 }
             }
         }
-    
+
         return $dataSource;
     }
 }

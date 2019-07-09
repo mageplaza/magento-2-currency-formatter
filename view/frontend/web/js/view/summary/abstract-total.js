@@ -20,7 +20,7 @@
 define([
     'jquery',
     'Magento_Checkout/js/model/quote',
-    'Magento_Catalog/js/price-utils',
+    'Magento_Catalog/js/price-utils'
 ], function($, quote, priceUtils){
     'use strict';
     
@@ -32,7 +32,7 @@ define([
         integerRequired: '',
         pattern: '',
         precision: '',
-        requiredPrecision: '',
+        requiredPrecision: ''
     };
     
     var mixins = {
@@ -79,7 +79,7 @@ define([
                 
                 return priceUtils.formatPrice(newPrice, newFormat);
             }
-        },
+        }
     };
     
     return function (AbstractTotal) {

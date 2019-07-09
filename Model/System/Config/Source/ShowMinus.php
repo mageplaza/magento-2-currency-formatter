@@ -31,7 +31,7 @@ class ShowMinus extends OptionArray
     const AFTER_VALUE   = 'after_value';
     const BEFORE_SYMBOL = 'before_symbol';
     const AFTER_SYMBOL  = 'after_symbol';
-    
+
     /**
      * @return array
      */

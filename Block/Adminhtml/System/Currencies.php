@@ -23,11 +23,11 @@ namespace Mageplaza\CurrencyFormatter\Block\Adminhtml\System;
 
 use Magento\Backend\Block\Template\Context;
 use Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray;
-use Mageplaza\CurrencyFormatter\Helper\Data as HelperData;
-use Magento\Framework\Locale\CurrencyInterface;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Store\Model\ScopeInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Locale\CurrencyInterface;
+use Magento\Store\Model\ScopeInterface;
+use Mageplaza\CurrencyFormatter\Helper\Data as HelperData;
 
 /**
  * Class Currencies
@@ -36,17 +36,17 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 class Currencies extends AbstractFieldArray
 {
     const BASE_SELECT_NAME = 'groups[general][fields][currencies][value]';
-    
+
     /**
      * @var string
      */
     protected $_template = 'Mageplaza_CurrencyFormatter::system/config/currencies.phtml';
-    
+
     /**
      * @var HelperData
      */
     protected $_helperData;
-    
+
     /**
      * @var CurrencyInterface
      */
@@ -54,6 +54,7 @@ class Currencies extends AbstractFieldArray
 
     /**
      * Currencies constructor.
+     *
      * @param Context $context
      * @param HelperData $helperData
      * @param CurrencyInterface $localeCurrency
@@ -67,6 +68,7 @@ class Currencies extends AbstractFieldArray
     ) {
         $this->_helperData = $helperData;
         $this->_localeCurrency = $localeCurrency;
+
         parent::__construct($context, $data);
     }
 
@@ -79,7 +81,7 @@ class Currencies extends AbstractFieldArray
         $this->addColumn('template', ['label' => __('Template')]);
         $this->addColumn('preview', ['label' => __('Preview')]);
     }
-    
+
     /**
      * @return string
      * @throws NoSuchEntityException
@@ -96,7 +98,6 @@ class Currencies extends AbstractFieldArray
             $mpCurrencies[$code]['config'] = $this->_helperData->getSavedConfig($code, $scopeData);
             $mpCurrencies[$code]['default'] = $scopeData['defaultTxt'];
             $mpCurrencies[$code]['base'] = self::BASE_SELECT_NAME;
-            
         }
 
         return HelperData::jsonEncode(array_values($mpCurrencies));
@@ -109,33 +110,34 @@ class Currencies extends AbstractFieldArray
     {
         return HelperData::jsonEncode($this->_helperData->getFormatOptions());
     }
-    
+
     /**
      * @param array $params
+     *
      * @return array
      */
     public function getScopeData($params)
     {
-        if (isset($params['website']) && (int)$params['website'] !== 0) {
+        if (isset($params['website']) && (int) $params['website'] !== 0) {
             return [
-                'id' => $params['website'],
+                'id'         => $params['website'],
                 'defaultTxt' => __('Use Default'),
-                'type' => ScopeInterface::SCOPE_WEBSITES
+                'type'       => ScopeInterface::SCOPE_WEBSITES
             ];
         }
-    
-        if (isset($params['store']) && (int)$params['store'] !== 0) {
+
+        if (isset($params['store']) && (int) $params['store'] !== 0) {
             return [
-                'id' => $params['store'],
+                'id'         => $params['store'],
                 'defaultTxt' => __('Use Website'),
-                'type' => ScopeInterface::SCOPE_STORES
+                'type'       => ScopeInterface::SCOPE_STORES
             ];
         }
-    
+
         return [
-            'id' => 0,
+            'id'         => 0,
             'defaultTxt' => __('Use System'),
-            'type' => ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
+            'type'       => ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
         ];
     }
 }

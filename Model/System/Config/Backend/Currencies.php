@@ -47,7 +47,7 @@ class Currencies extends Value
         if (is_array($value)) {
             $this->setValue(HelperData::jsonEncode($value));
         }
-        
+
         return parent::beforeSave();
     }
 }

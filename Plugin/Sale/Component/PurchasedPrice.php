@@ -23,15 +23,17 @@ namespace Mageplaza\CurrencyFormatter\Plugin\Sale\Component;
 
 use Magento\Directory\Model\Currency\DefaultLocator;
 use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Locale\CurrencyInterface;
 use Magento\Framework\Locale\FormatInterface;
 use Magento\Framework\Locale\ResolverInterface;
+use Magento\Sales\Model\OrderFactory;
 use Magento\Sales\Ui\Component\Listing\Column\PurchasedPrice as ListingPurchasedPrice;
 use Magento\Store\Model\StoreManagerInterface;
 use Mageplaza\CurrencyFormatter\Helper\Data as HelperData;
 use Mageplaza\CurrencyFormatter\Model\Locale\DefaultFormat;
 use Mageplaza\CurrencyFormatter\Plugin\AbstractFormat;
-use Magento\Sales\Model\OrderFactory;
+use Zend_Currency_Exception;
 
 /**
  * Class Price
@@ -43,9 +45,10 @@ class PurchasedPrice extends AbstractFormat
      * @var OrderFactory
      */
     protected $_orderFactory;
-    
+
     /**
      * PurchasedPrice constructor.
+     *
      * @param StoreManagerInterface $storeManager
      * @param HelperData $helperData
      * @param ResolverInterface $localeResolver
@@ -68,7 +71,7 @@ class PurchasedPrice extends AbstractFormat
         OrderFactory $orderFactory
     ) {
         $this->_orderFactory = $orderFactory;
-    
+
         parent::__construct(
             $storeManager,
             $helperData,
@@ -80,14 +83,15 @@ class PurchasedPrice extends AbstractFormat
             $request
         );
     }
-    
+
     /**
      * @param ListingPurchasedPrice $subject
      * @param callable $proceed
      * @param array $dataSource
+     *
      * @return array
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     * @throws \Zend_Currency_Exception
+     * @throws NoSuchEntityException
+     * @throws Zend_Currency_Exception
      */
     public function aroundPrepareDataSource(ListingPurchasedPrice $subject, callable $proceed, array $dataSource)
     {
@@ -102,7 +106,7 @@ class PurchasedPrice extends AbstractFormat
                     $orderId = isset($item['order_id']) ? $item['order_id'] : $item['entity_id'];
                     $order = $this->_orderFactory->create()->load($orderId);
                     $storeId = $order->getStoreId();
-    
+
                     $currencyCode = isset($item['order_currency_code'])
                         ? $item['order_currency_code']
                         : $item['base_currency_code'];
@@ -115,7 +119,7 @@ class PurchasedPrice extends AbstractFormat
                 }
             }
         }
-        
+
         return $dataSource;
     }
 }

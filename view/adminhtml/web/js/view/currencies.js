@@ -33,7 +33,7 @@ define([
         '#mpcurrencyformatter_minus_sign_',
         '#mpcurrencyformatter_symbol_',
         '#mpcurrencyformatter_decimal_separator_',
-        '#mpcurrencyformatter_show_minus_',
+        '#mpcurrencyformatter_show_minus_'
     ];
     
     return Component.extend({
@@ -143,6 +143,6 @@ define([
                     $(field + code).removeAttr('disabled');
                 });
             }
-        },
+        }
     });
 });

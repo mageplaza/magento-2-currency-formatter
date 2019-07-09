@@ -21,9 +21,9 @@
 
 namespace Mageplaza\CurrencyFormatter\Plugin\Locale;
 
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Locale\Format as LocaleFormat;
 use Mageplaza\CurrencyFormatter\Plugin\AbstractFormat;
-use Magento\Framework\Exception\NoSuchEntityException;
 
 /**
  * Class Format
@@ -34,6 +34,7 @@ class Format extends AbstractFormat
     /**
      * @param LocaleFormat $subject
      * @param $result
+     *
      * @return mixed
      * @throws NoSuchEntityException
      */
@@ -42,7 +43,7 @@ class Format extends AbstractFormat
         if (!$this->_helperData->isEnabled()) {
             return $result;
         }
-        
+
         $code = $this->getCurrencyCode();
         $config = $this->getFormatByCurrency($code);
 
@@ -54,7 +55,7 @@ class Format extends AbstractFormat
         $result['showMinus'] = $config['show_minus'];
         $result['symbol'] = $config['symbol'];
         $result['minusSign'] = $config['minus_sign'];
-        
+
         return $result;
     }
 }

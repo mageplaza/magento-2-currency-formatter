@@ -21,6 +21,8 @@
 
 namespace Mageplaza\CurrencyFormatter\Model\Locale;
 
+use NumberFormatter;
+
 /**
  * Class DefaultFormat
  * @package Mageplaza\CurrencyFormatter\Model\Locale
@@ -32,19 +34,20 @@ class DefaultFormat
     /**
      * @param string $localeCode
      * @param string $currencyCode
+     *
      * @return array
      */
     public function getFormat($localeCode, $currencyCode)
     {
-        $formatter = new \NumberFormatter(
+        $formatter = new NumberFormatter(
             $localeCode . '@currency=' . $currencyCode,
-            \NumberFormatter::CURRENCY
+            NumberFormatter::CURRENCY
         );
-        
+
         $format = $formatter->getPattern();
-        $decimalSymbol = $formatter->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
-        $groupSymbol = $formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL);
-    
+        $decimalSymbol = $formatter->getSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
+        $groupSymbol = $formatter->getSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL);
+
         $pos = strpos($format, ';');
         if ($pos !== false) {
             $format = substr($format, 0, $pos);
@@ -63,13 +66,13 @@ class DefaultFormat
         if ($pos !== false) {
             $requiredPrecision = strlen($t) - $pos - $totalPrecision;
         }
-    
+
         $result = [
             'requiredPrecision' => $requiredPrecision,
-            'decimalSymbol' => $decimalSymbol,
-            'groupSymbol' => $groupSymbol,
+            'decimalSymbol'     => $decimalSymbol,
+            'groupSymbol'       => $groupSymbol,
         ];
-    
+
         return $result;
     }
 }

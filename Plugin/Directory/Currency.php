@@ -22,8 +22,9 @@
 namespace Mageplaza\CurrencyFormatter\Plugin\Directory;
 
 use Magento\Directory\Model\Currency as DirectoryCurrency;
-use Mageplaza\CurrencyFormatter\Plugin\AbstractFormat;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Mageplaza\CurrencyFormatter\Plugin\AbstractFormat;
+use Zend_Currency_Exception;
 
 /**
  * Class Currency
@@ -36,9 +37,10 @@ class Currency extends AbstractFormat
      * @param callable $proceed
      * @param $price
      * @param array $options
+     *
      * @return string
      * @throws NoSuchEntityException
-     * @throws \Zend_Currency_Exception
+     * @throws Zend_Currency_Exception
      */
     public function aroundFormatTxt(DirectoryCurrency $subject, callable $proceed, $price, $options = [])
     {
@@ -46,7 +48,7 @@ class Currency extends AbstractFormat
             return $proceed($price, $options);
         }
         $storeId = $this->_helperData->isAdmin() ? 0 : null;
-        $currency= $subject->getCurrencyCode();
+        $currency = $subject->getCurrencyCode();
 
         return $this->formatCurrencyText($currency, $price, $storeId);
     }

@@ -21,24 +21,24 @@
 
 namespace Mageplaza\CurrencyFormatter\Helper;
 
+use Magento\CurrencySymbol\Model\System\Currencysymbol;
+use Magento\Directory\Model\CurrencyFactory;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Locale\CurrencyInterface;
 use Magento\Framework\Locale\Resolver as LocaleResolver;
 use Magento\Framework\ObjectManagerInterface;
+use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Mageplaza\Core\Helper\AbstractData;
+use Mageplaza\CurrencyFormatter\Model\Core\Configuration as ResourceConfiguration;
+use Mageplaza\CurrencyFormatter\Model\Locale\DefaultFormat;
 use Mageplaza\CurrencyFormatter\Model\System\Config\Source\DecimalNumber;
 use Mageplaza\CurrencyFormatter\Model\System\Config\Source\DecimalSeparator;
 use Mageplaza\CurrencyFormatter\Model\System\Config\Source\GroupSeparator;
-use Mageplaza\CurrencyFormatter\Model\System\Config\Source\ShowSymbol;
 use Mageplaza\CurrencyFormatter\Model\System\Config\Source\ShowMinus;
-use Magento\Framework\Locale\CurrencyInterface;
-use Mageplaza\CurrencyFormatter\Model\Locale\DefaultFormat;
-use Magento\Directory\Model\CurrencyFactory;
-use Magento\CurrencySymbol\Model\System\Currencysymbol;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Mageplaza\CurrencyFormatter\Model\Core\Configuration as ResourceConfiguration;
+use Mageplaza\CurrencyFormatter\Model\System\Config\Source\ShowSymbol;
 
 /**
  * Class Data
@@ -47,50 +47,50 @@ use Mageplaza\CurrencyFormatter\Model\Core\Configuration as ResourceConfiguratio
 class Data extends AbstractData
 {
     const CONFIG_MODULE_PATH = 'mpcurrencyformatter';
-    const MINUS_SIGN = '-';
-    const CURRENCY_WEBSITE = 'currency/options/allow';
-    const CONFIG_PATH = 'mpcurrencyformatter/general/currencies';
+    const MINUS_SIGN         = '-';
+    const CURRENCY_WEBSITE   = 'currency/options/allow';
+    const CONFIG_PATH        = 'mpcurrencyformatter/general/currencies';
 
     /**
      * @var DecimalNumber
      */
     protected $_decimalNumber;
-    
+
     /**
      * @var DecimalSeparator
      */
     protected $_decimalSeparator;
-    
+
     /**
      * @var GroupSeparator
      */
     protected $_groupSeparator;
-    
+
     /**
      * @var ShowSymbol
      */
     protected $_showSymbol;
-    
+
     /**
      * @var ShowMinus
      */
     protected $_showMinus;
-    
+
     /**
      * @var CurrencyInterface
      */
     protected $_localeCurrency;
-    
+
     /**
      * @var DefaultFormat
      */
     protected $_defaultFormat;
-    
+
     /**
      * @var LocaleResolver
      */
     protected $_localeResolver;
-    
+
     /**
      * @var CurrencyFactory
      */
@@ -108,6 +108,7 @@ class Data extends AbstractData
 
     /**
      * Data constructor.
+     *
      * @param Context $context
      * @param ObjectManagerInterface $objectManager
      * @param StoreManagerInterface $storeManager
@@ -153,23 +154,24 @@ class Data extends AbstractData
 
         parent::__construct($context, $objectManager, $storeManager);
     }
-    
+
     /**
      * @return array
      */
     public function getFormatOptions()
     {
         return [
-            'decimal_number' => $this->_decimalNumber->toOptionArray(),
+            'decimal_number'    => $this->_decimalNumber->toOptionArray(),
             'decimal_separator' => $this->_decimalSeparator->toOptionArray(),
-            'group_separator' => $this->_groupSeparator->toOptionArray(),
-            'show_symbol' => $this->_showSymbol->toOptionArray(),
-            'show_minus' => $this->_showMinus->toOptionArray(),
+            'group_separator'   => $this->_groupSeparator->toOptionArray(),
+            'show_symbol'       => $this->_showSymbol->toOptionArray(),
+            'show_minus'        => $this->_showMinus->toOptionArray(),
         ];
     }
-    
+
     /**
      * @param string $currency
+     *
      * @return string
      */
     public function getCurrencySymbol($currency)
@@ -180,14 +182,16 @@ class Data extends AbstractData
             if (isset($symbolData[$currency]['displaySymbol'])) {
                 return $symbolData[$currency]['displaySymbol'];
             }
+
             return $currency;
         }
-        
+
         return $localeCurrency->getSymbol();
     }
 
     /**
      * @param string $currencyCode
+     *
      * @return array
      */
     public function getCurrencyDefaultConfig($currencyCode)
@@ -196,19 +200,20 @@ class Data extends AbstractData
         $defaultConfig = $this->_defaultFormat->getFormat($currentLocale, $currencyCode);
 
         return [
-            'use_default' => 1,
-            'decimal_number' => $defaultConfig['requiredPrecision'],
+            'use_default'       => 1,
+            'decimal_number'    => $defaultConfig['requiredPrecision'],
             'decimal_separator' => $defaultConfig['decimalSymbol'],
-            'group_separator' => $defaultConfig['groupSymbol'],
-            'symbol' => $this->getCurrencySymbol($currencyCode),
-            'show_symbol' => ShowSymbol::BEFORE,
-            'show_minus' => ShowMinus::BEFORE_SYMBOL,
-            'minus_sign' => self::MINUS_SIGN,
+            'group_separator'   => $defaultConfig['groupSymbol'],
+            'symbol'            => $this->getCurrencySymbol($currencyCode),
+            'show_symbol'       => ShowSymbol::BEFORE,
+            'show_minus'        => ShowMinus::BEFORE_SYMBOL,
+            'minus_sign'        => self::MINUS_SIGN,
         ];
     }
 
     /**
      * @param array $scopeData
+     *
      * @return array
      * @throws NoSuchEntityException
      */
@@ -220,17 +225,18 @@ class Data extends AbstractData
                 return explode(',', $codes);
             }
         }
-    
+
         if ($scopeData['type'] === ScopeInterface::SCOPE_STORES) {
             return $this->storeManager->getStore($scopeData['id'])->getAvailableCurrencyCodes();
         }
-    
+
         return $this->storeManager->getStore(0)->getAvailableCurrencyCodes();
     }
 
     /**
      * @param string $code
      * @param array $scope
+     *
      * @return array
      * @throws NoSuchEntityException
      */
@@ -260,6 +266,7 @@ class Data extends AbstractData
 
     /**
      * @param string $code
+     *
      * @return array
      */
     public function getSavedDefaultConfig($code)
@@ -275,6 +282,7 @@ class Data extends AbstractData
     /**
      * @param string $code
      * @param int $websiteId
+     *
      * @return array
      */
     public function getSavedWebsiteConfig($code, $websiteId)
@@ -291,10 +299,11 @@ class Data extends AbstractData
 
         return $defaultConfig;
     }
-    
+
     /**
      * @param string $code
      * @param null $storeId
+     *
      * @return array
      * @throws NoSuchEntityException
      */
@@ -303,31 +312,34 @@ class Data extends AbstractData
         $currencyConfig = self::jsonDecode($this->getConfigGeneral('currencies', $storeId));
         if (!isset($currencyConfig[$code])) {
             $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
+
             return $this->getSavedWebsiteConfig($code, $websiteId);
         }
-        
+
         return $currencyConfig[$code];
     }
-    
+
     /**
      * @param string $code
      * @param string $showSymbol
      * @param string $symbol
+     *
      * @return string
      */
     public function getLocaleShowSymbol($code, $showSymbol, $symbol)
     {
         $currency = $this->_currencyFactory->create()->load($code);
         $default = $currency->getOutputFormat();
-    
+
         return $this->processShowSymbol($symbol, DefaultFormat::CONTENT, $showSymbol, [], $default);
     }
-    
+
     /**
      * @param string $result
      * @param int $decimal
      * @param array $original
      * @param array $config
+     *
      * @return mixed|string
      */
     public function getDirectoryCurrency($result, $decimal, $original, $config)
@@ -347,6 +359,7 @@ class Data extends AbstractData
                 $config['show_symbol'],
                 $negative
             );
+
             return str_replace($original['groupSymbol'], $config['group_separator'], $processedCurrency);
         }
 
@@ -358,13 +371,14 @@ class Data extends AbstractData
 
         return $this->processShowSymbol($config['symbol'], $result, $config['show_symbol'], $negative);
     }
-    
+
     /**
      * @param string $symbol
      * @param string $content
      * @param string $options
      * @param array $negative
      * @param null $default
+     *
      * @return string
      */
     public function processShowSymbol($symbol, $content, $options, $negative, $default = null)
@@ -392,18 +406,19 @@ class Data extends AbstractData
             case ShowSymbol::BEFORE:
                 return $symbol . $content;
             case ShowSymbol::BEFORE_WITH_SPACE:
-                return $symbol .' '. $content;
+                return $symbol . ' ' . $content;
             case ShowSymbol::AFTER:
                 return $content . $symbol;
             case ShowSymbol::AFTER_WITH_SPACE:
-                return $content .' '. $symbol;
+                return $content . ' ' . $symbol;
             case ShowSymbol::NONE:
                 if (isset($negative['minus_sign'])) {
                     return $negative['minus_sign'] . $content;
                 }
+
                 return $content;
         }
-        
+
         if ($default !== null) {
             return $default;
         }

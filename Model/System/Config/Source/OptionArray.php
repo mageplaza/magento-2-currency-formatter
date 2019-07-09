@@ -29,11 +29,11 @@ use Magento\Framework\Option\ArrayInterface;
  */
 abstract class OptionArray implements ArrayInterface
 {
-    const COMMA  = ',';
-    const DOT    = '.';
-    const SPACE  = ' ';
-    const NONE   = '';
-    
+    const COMMA = ',';
+    const DOT   = '.';
+    const SPACE = ' ';
+    const NONE  = '';
+
     /**
      * Return array of options as value-label pairs
      *

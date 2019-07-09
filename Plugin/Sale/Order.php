@@ -21,9 +21,10 @@
 
 namespace Mageplaza\CurrencyFormatter\Plugin\Sale;
 
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Sales\Model\Order as SaleOrder;
 use Mageplaza\CurrencyFormatter\Plugin\AbstractFormat;
-use Magento\Framework\Exception\NoSuchEntityException;
+use Zend_Currency_Exception;
 
 /**
  * Class Order
@@ -37,9 +38,10 @@ class Order extends AbstractFormat
      * @param $price
      * @param $precision
      * @param bool $addBrackets
+     *
      * @return mixed
      * @throws NoSuchEntityException
-     * @throws \Zend_Currency_Exception
+     * @throws Zend_Currency_Exception
      */
     public function aroundFormatPricePrecision(
         SaleOrder $subject,
@@ -53,6 +55,7 @@ class Order extends AbstractFormat
         }
 
         $currency = $subject->getOrderCurrencyCode();
+
         return $this->formatCurrencyText($currency, $price, $subject->getStoreId());
     }
 }

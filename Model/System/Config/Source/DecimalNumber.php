@@ -32,12 +32,6 @@ class DecimalNumber extends OptionArray
      */
     public function getOptionHash()
     {
-        return [
-            0   => __('0'),
-            1   => __('1'),
-            2   => __('2'),
-            3   => __('3'),
-            4   => __('4'),
-        ];
+        return [0, 1, 2, 3, 4];
     }
 }
