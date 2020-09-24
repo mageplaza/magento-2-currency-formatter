@@ -44,7 +44,18 @@ class Format extends AbstractFormat
             return $result;
         }
 
-        $code = $this->getCurrencyCode();
+        $baseCurrencyCode = $this->checkoutSession->getQuote()->getBaseCurrencyCode();
+        if($baseCurrencyCode){
+            if($result['currencyCode'] !== $baseCurrencyCode){
+                $code = $this->getCurrencyCode();
+            }
+            else{
+                $code = $baseCurrencyCode;
+            }
+        }
+        else{
+            $code = $this->getCurrencyCode();
+        }
         $config = $this->getFormatByCurrency($code);
 
         $result['pattern'] = $this->_helperData->getLocaleShowSymbol($code, $config['show_symbol'], $config['symbol']);
