@@ -30,6 +30,7 @@ use Magento\Framework\Locale\CurrencyInterface;
 use Magento\Framework\Locale\FormatInterface;
 use Magento\Framework\Locale\ResolverInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Checkout\Model\Session;
 use Mageplaza\CurrencyFormatter\Helper\Data as HelperData;
 use Mageplaza\CurrencyFormatter\Model\Locale\DefaultFormat;
 use Zend_Currency;
@@ -84,6 +85,11 @@ abstract class AbstractFormat
     protected $_request;
 
     /**
+     * @var
+     */
+    protected $checkoutSession;
+
+    /**
      * AbstractFormat constructor.
      *
      * @param StoreManagerInterface $storeManager
@@ -94,6 +100,7 @@ abstract class AbstractFormat
      * @param DefaultFormat $defaultFormat
      * @param DefaultLocator $currencyLocator
      * @param RequestInterface $request
+     * @param Session $checkoutSession
      */
     public function __construct(
         StoreManagerInterface $storeManager,
@@ -103,7 +110,8 @@ abstract class AbstractFormat
         FormatInterface $localeFormat,
         DefaultFormat $defaultFormat,
         DefaultLocator $currencyLocator,
-        RequestInterface $request
+        RequestInterface $request,
+        Session $checkoutSession
     ) {
         $this->_helperData = $helperData;
         $this->_storeManager = $storeManager;
@@ -113,6 +121,7 @@ abstract class AbstractFormat
         $this->_defaultFormat = $defaultFormat;
         $this->_currencyLocator = $currencyLocator;
         $this->_request = $request;
+        $this->checkoutSession = $checkoutSession;
     }
 
     /**
