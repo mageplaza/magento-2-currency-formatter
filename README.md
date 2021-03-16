@@ -1,4 +1,4 @@
-# Magento 2 Currency Formatter Free Extension
+# Magento 2 Currency Formatter Extension Free
 
 [Mageplaza Currency Formatter extension](http://www.mageplaza.com/magento-2-currency-formatter/) brings flexibility in formatting the price currency appearance in Magento stores. With the support of Currency Formatter, customers from multi-nations will feel familiar with the price format and avoid risks of misunderstanding. 
 
@@ -235,4 +235,31 @@ When **Template** field changes, the currency format is shown in **Preview** als
 
 
 
+
+**Other Mageplaza extensions on Magento Marketplace, Github**
+
+
+☞ [Magento 2 One Step Checkout extension](https://marketplace.magento.com/mageplaza-magento-2-one-step-checkout-extension.html)
+
+☞ [Magento 2 SEO extension](https://marketplace.magento.com/mageplaza-magento-2-seo-extension.html)
+
+☞ [Magento 2 Reward Points](https://marketplace.magento.com/mageplaza-module-reward-points.html)
+
+☞ [Magento 2 Blog extension](https://marketplace.magento.com/mageplaza-magento-2-blog-extension.html)
+
+☞ [Magento 2 Layered Navigation extension](https://marketplace.magento.com/mageplaza-layered-navigation-m2.html)
+
+☞ [Magento 2 Google Tag Manager Enhanced eCommerce](https://www.mageplaza.com/magento-2-google-tag-manager/)
+
+☞ [Magento 2 Social Login on Github](https://github.com/mageplaza/magento-2-social-login)
+
+☞ [Magento 2 SEO on Github](https://github.com/mageplaza/magento-2-seo)
+
+☞ [Magento 2 SMTP on Github](https://github.com/mageplaza/magento-2-smtp)
+
+☞ [Magento 2 Product Slider on Github](https://github.com/mageplaza/magento-2-product-slider)
+
+☞ [Magento 2 Banner on Github](https://github.com/mageplaza/magento-2-banner-slider)
+
+☞ [Magento 2 GDPR](https://marketplace.magento.com/mageplaza-module-gdpr.html)
 
