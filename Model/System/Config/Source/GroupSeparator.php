@@ -36,6 +36,7 @@ class GroupSeparator extends OptionArray
             self::COMMA => __('Comma (,)'),
             self::DOT   => __('Dot (.)'),
             self::SPACE => __('Space ( )'),
+            self::TICK => __("Tick (')"),
             self::NONE  => __('None'),
         ];
     }

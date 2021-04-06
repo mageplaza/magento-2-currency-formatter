@@ -29,6 +29,7 @@ use Magento\Framework\Option\ArrayInterface;
  */
 abstract class OptionArray implements ArrayInterface
 {
+    const TICK = "'";
     const COMMA = ',';
     const DOT   = '.';
     const SPACE = ' ';
