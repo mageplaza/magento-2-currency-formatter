@@ -33,10 +33,11 @@ class GroupSeparator extends OptionArray
     public function getOptionHash()
     {
         return [
-            self::COMMA => __('Comma (,)'),
-            self::DOT   => __('Dot (.)'),
-            self::SPACE => __('Space ( )'),
-            self::NONE  => __('None'),
+            self::COMMA => __("Comma (,)"),
+            self::TICK  => __("Tick (')"),
+            self::DOT   => __("Dot (.)"),
+            self::SPACE => __("Space ( )"),
+            self::NONE  => __("None"),
         ];
     }
 }
