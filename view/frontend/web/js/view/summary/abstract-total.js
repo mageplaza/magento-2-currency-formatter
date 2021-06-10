@@ -21,33 +21,33 @@ define([
     'jquery',
     'Magento_Checkout/js/model/quote',
     'Magento_Catalog/js/price-utils'
-], function($, quote, priceUtils){
+], function ($, quote, priceUtils) {
     'use strict';
-    
-    var content = '%s',
+
+    var content   = '%s',
         newFormat = {
-        decimalSymbol: '',
-        groupLength: '',
-        groupSymbol: '',
-        integerRequired: '',
-        pattern: '',
-        precision: '',
-        requiredPrecision: ''
-    };
-    
+            decimalSymbol: '',
+            groupLength: '',
+            groupSymbol: '',
+            integerRequired: '',
+            pattern: '',
+            precision: '',
+            requiredPrecision: ''
+        };
+
     var mixins = {
         getFormattedPrice: function (price) {
-            var format = quote.getPriceFormat(),
+            var format     = quote.getPriceFormat(),
                 newPattern = null,
-                newPrice = null;
-            
-            if (price > 0) {
+                newPrice   = null;
+
+            if (price > 0 || price === 0) {
                 return this._super(price);
             }
-            
+
             if (price < 0 && format.showMinus && format.minusSign && format.symbol) {
                 newPrice = price * -1;
-                switch (format.showMinus) {
+                switch (format.showMinus){
                     case 'before_value':
                         newPattern = format.pattern.replace(content, format.minusSign + content);
                         break;
@@ -64,24 +64,24 @@ define([
                         newPattern = format.pattern;
                         break;
                 }
-                
+
                 if (format.pattern.indexOf(format.symbol) === -1) {
                     newPattern = format.minusSign + format.pattern;
                 }
-                
+
                 $.each(newFormat, function (key) {
                     if (key === 'pattern') {
                         newFormat['pattern'] = newPattern;
-                    }else {
+                    } else {
                         newFormat[key] = format[key];
                     }
                 });
-                
+
                 return priceUtils.formatPrice(newPrice, newFormat);
             }
         }
     };
-    
+
     return function (AbstractTotal) {
         return AbstractTotal.extend(mixins);
     };
