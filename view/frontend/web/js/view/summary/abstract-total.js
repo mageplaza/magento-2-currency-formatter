@@ -45,7 +45,7 @@ define([
                 return this._super(price);
             }
 
-            if (price < 0 && format.showMinus && format.minusSign && format.symbol) {
+            if (format.showMinus && format.minusSign && format.symbol) {
                 newPrice = price * -1;
                 switch (format.showMinus){
                     case 'before_value':
