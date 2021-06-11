@@ -41,7 +41,7 @@ define([
                 newPattern = null,
                 newPrice   = null;
 
-            if (price > 0 || price === 0) {
+            if (price >= 0) {
                 return this._super(price);
             }
 
