@@ -71,8 +71,16 @@ class Format extends AbstractFormat
         Session $checkoutSession
     ) {
         $this->_checkoutSession = $checkoutSession;
-        parent::__construct($storeManager, $helperData, $localeResolver, $localeCurrency, $localeFormat, $defaultFormat,
-            $currencyLocator, $request);
+        parent::__construct(
+            $storeManager,
+            $helperData,
+            $localeResolver,
+            $localeCurrency,
+            $localeFormat,
+            $defaultFormat,
+            $currencyLocator,
+            $request
+        );
     }
 
     /**
@@ -120,9 +128,13 @@ class Format extends AbstractFormat
                 $code = $baseCurrencyCode;
             }
         }
-        $config                      = $this->getFormatByCurrency($code);
-        $result['pattern']           = $this->_helperData->getLocaleShowSymbol($code, $config['show_symbol'],
-            $config['symbol']);
+        $config           = $this->getFormatByCurrency($code);
+        $localeShowSymbol = $this->_helperData->getLocaleShowSymbol(
+            $code,
+            $config['show_symbol'],
+            $config['symbol']
+        );
+        $result['pattern']           = $localeShowSymbol;
         $result['precision']         = $config['decimal_number'];
         $result['requiredPrecision'] = $config['decimal_number'];
         $result['decimalSymbol']     = $config['decimal_separator'];
