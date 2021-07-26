@@ -38,6 +38,13 @@ A: Yes, you can preview each modification at the backend easily with an example.
 
 Run the following command in Magento 2 root folder:
 
+With Marketing Automation (recommend):
+```
+composer require mageplaza/module-currency-formatter mageplaza/module-smtp
+php bin/magento setup:upgrade
+php bin/magento setup:static-content:deploy
+```
+Without Marketing Automation:
 ```
 composer require mageplaza/module-currency-formatter
 php bin/magento setup:upgrade
