@@ -363,8 +363,9 @@ class Data extends AbstractData
             return str_replace($original['groupSymbol'], $config['group_separator'], $processedCurrency);
         }
 
-        $decimalPart = substr($result, -($decimal + 1), $decimal + 1);
-        $currencyPart = substr($result, 0, strlen($result) - ($decimal + 1));
+        $decimalSeparatorLength = strlen($original['decimalSymbol']);
+        $decimalPart = substr($result, -($decimal + $decimalSeparatorLength), $decimal + $decimalSeparatorLength);
+        $currencyPart = substr($result, 0, strlen($result) - ($decimal + $decimalSeparatorLength));
         $currencyPartResult = str_replace($original['groupSymbol'], $config['group_separator'], $currencyPart);
         $decimalPartResult = str_replace($original['decimalSymbol'], $config['decimal_separator'], $decimalPart);
         $result = $currencyPartResult . $decimalPartResult;
