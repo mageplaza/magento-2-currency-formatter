@@ -21,9 +21,18 @@
 
 namespace Mageplaza\CurrencyFormatter\Plugin\Locale;
 
+use Magento\Checkout\Model\Session;
+use Magento\Directory\Model\Currency\DefaultLocator;
+use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Locale\CurrencyInterface;
 use Magento\Framework\Locale\Format as LocaleFormat;
+use Magento\Framework\Locale\FormatInterface;
+use Magento\Framework\Locale\ResolverInterface;
+use Magento\Store\Model\StoreManagerInterface;
+use Mageplaza\CurrencyFormatter\Helper\Data as HelperData;
+use Mageplaza\CurrencyFormatter\Model\Locale\DefaultFormat;
 use Mageplaza\CurrencyFormatter\Plugin\AbstractFormat;
 
 /**
@@ -32,6 +41,48 @@ use Mageplaza\CurrencyFormatter\Plugin\AbstractFormat;
  */
 class Format extends AbstractFormat
 {
+    /**
+     * @var Session
+     */
+    protected $_checkoutSession;
+
+    /**
+     * AbstractFormat constructor.
+     *
+     * @param StoreManagerInterface $storeManager
+     * @param HelperData $helperData
+     * @param ResolverInterface $localeResolver
+     * @param CurrencyInterface $localeCurrency
+     * @param FormatInterface $localeFormat
+     * @param DefaultFormat $defaultFormat
+     * @param DefaultLocator $currencyLocator
+     * @param RequestInterface $request
+     * @param Session $checkoutSession
+     */
+    public function __construct(
+        StoreManagerInterface $storeManager,
+        HelperData $helperData,
+        ResolverInterface $localeResolver,
+        CurrencyInterface $localeCurrency,
+        FormatInterface $localeFormat,
+        DefaultFormat $defaultFormat,
+        DefaultLocator $currencyLocator,
+        RequestInterface $request,
+        Session $checkoutSession
+    ) {
+        $this->_checkoutSession = $checkoutSession;
+        parent::__construct(
+            $storeManager,
+            $helperData,
+            $localeResolver,
+            $localeCurrency,
+            $localeFormat,
+            $defaultFormat,
+            $currencyLocator,
+            $request
+        );
+    }
+
     /**
      * @param LocaleFormat $subject
      * @param callable $proceed
@@ -69,12 +120,14 @@ class Format extends AbstractFormat
         if (!$this->_helperData->isEnabled()) {
             return $result;
         }
-        $baseCurrencyCode = $this->_storeManager->getStore()->getBaseCurrency()->getCode();
-        $code = $this->getCurrencyCode();
-        if ($baseCurrencyCode && isset($result['currencyCode']) && $result['currencyCode'] === $baseCurrencyCode) {
-            $code = $baseCurrencyCode;
-        }
+        $baseCurrencyCode = $this->_checkoutSession->getQuote()->getBaseCurrencyCode();
 
+        $code = $this->getCurrencyCode();
+        if ($baseCurrencyCode) {
+            if (isset($result['currencyCode']) && $result['currencyCode'] === $baseCurrencyCode) {
+                $code = $baseCurrencyCode;
+            }
+        }
         $config           = $this->getFormatByCurrency($code);
         $localeShowSymbol = $this->_helperData->getLocaleShowSymbol(
             $code,
