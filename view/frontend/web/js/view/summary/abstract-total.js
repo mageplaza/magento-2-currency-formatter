@@ -79,6 +79,8 @@ define([
 
                 return priceUtils.formatPrice(newPrice, newFormat);
             }
+
+            return this._super(price);
         }
     };
 
