@@ -36,7 +36,7 @@ class PriceCurrency extends AbstractFormat
      * @return int
      * @throws NoSuchEntityException
      */
-    public function getPrecision(): int
+    public function getPrecision()
     {
         $baseCurrencyCode = $this->_storeManager->getStore()->getBaseCurrency()->getCode();
         $code             = $this->getCurrencyCode();
@@ -58,7 +58,7 @@ class PriceCurrency extends AbstractFormat
      * @throws NoSuchEntityException
      * @throws Zend_Currency_Exception
      */
-    public function aroundRound(DirectoryPriceCurrency $subject, callable $proceed, float $price): float
+    public function aroundRound(DirectoryPriceCurrency $subject, callable $proceed, $price)
     {
         if (!$this->_helperData->isEnabled()) {
             return $proceed($price);
@@ -80,9 +80,9 @@ class PriceCurrency extends AbstractFormat
     public function aroundRoundPrice(
         DirectoryPriceCurrency $subject,
         callable $proceed,
-        float $price,
-        int $precision
-    ): float {
+        $price,
+        $precision = DirectoryPriceCurrency::DEFAULT_PRECISION
+    ) {
         if (!$this->_helperData->isEnabled()) {
             return $proceed($price, $precision);
         }
