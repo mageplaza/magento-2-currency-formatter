@@ -236,7 +236,7 @@ abstract class AbstractFormat
         if ($rate = $subject->getColumn()->getRate()) {
             return (float) $rate;
         }
-        if ($rate = $row->getData($subject->getColumn()->getRateField())) {
+        if ($subject->getColumn()->getRateField() && $rate = $row->getData($subject->getColumn()->getRateField())) {
             return (float) $rate;
         }
 
