@@ -64,7 +64,7 @@ class PriceCurrency extends AbstractFormat
             return $proceed($price);
         }
 
-        return round($price, $this->getPrecision());
+        return round((float)$price, $this->getPrecision());
     }
 
     /**
