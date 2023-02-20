@@ -1,6 +1,8 @@
 # Magento 2 Currency Formatter Extension Free
 
-[Mageplaza Currency Formatter extension](http://www.mageplaza.com/magento-2-currency-formatter/) brings flexibility in formatting the price currency appearance in Magento stores. With the support of Currency Formatter, customers from multi-nations will feel familiar with the price format and avoid risks of misunderstanding. 
+> **(Update) 2023-02-20**: This project will be marked as a paid item and no longer be maintained as free. For further updates and technical support, please follow [Mageplaza Currency Formatter](http://www.mageplaza.com/magento-2-currency-formatter/) for more information. We understand that this change might create inconvenience for our users. However, this is to ensure that the module will be updated with more useful features to support Magento 2 stores better. If you have any concerns or ideas about any features you would like to see, don’t hesitate to [contact us](https://www.mageplaza.com/support/) and leave a request.
+
+Mageplaza Currency Formatter extension brings flexibility in formatting the price currency appearance in Magento stores. With the support of Currency Formatter, customers from multi-nations will feel familiar with the price format and avoid risks of misunderstanding. 
 
 ## 1. Documentation
 - [Installation guide](https://www.mageplaza.com/install-magento-2-extension/)
